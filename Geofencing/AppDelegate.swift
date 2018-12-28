@@ -15,7 +15,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // MARK: - Class Functions
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        // Set navbar colors
+        UINavigationBar.appearance().tintColor = UIColor.black
+        
         return true
     }
 
