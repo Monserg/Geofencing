@@ -23,6 +23,7 @@
 		B1ED1DCC21D5D85400249ACD /* SettingsShowViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1ED1DC621D5D85400249ACD /* SettingsShowViewController.swift */; };
 		B1ED1DCD21D5D85400249ACD /* SettingsShowInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1ED1DC721D5D85400249ACD /* SettingsShowInteractor.swift */; };
 		B1ED1DCF21D5F32B00249ACD /* SettingsShow.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B1ED1DCE21D5F32B00249ACD /* SettingsShow.storyboard */; };
+		B1ED1DD121D63FD200249ACD /* ReadMe in Resources */ = {isa = PBXBuildFile; fileRef = B1ED1DD021D63FD200249ACD /* ReadMe */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +45,7 @@
 		B1ED1DC621D5D85400249ACD /* SettingsShowViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsShowViewController.swift; sourceTree = "<group>"; };
 		B1ED1DC721D5D85400249ACD /* SettingsShowInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsShowInteractor.swift; sourceTree = "<group>"; };
 		B1ED1DCE21D5F32B00249ACD /* SettingsShow.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SettingsShow.storyboard; sourceTree = "<group>"; };
+		B1ED1DD021D63FD200249ACD /* ReadMe */ = {isa = PBXFileReference; lastKnownFileType = text; path = ReadMe; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +62,7 @@
 		B1ED1D9321D5C97A00249ACD = {
 			isa = PBXGroup;
 			children = (
+				B1ED1DD021D63FD200249ACD /* ReadMe */,
 				B1ED1D9E21D5C97A00249ACD /* Geofencing */,
 				B1ED1D9D21D5C97A00249ACD /* Products */,
 			);
@@ -195,6 +198,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B1ED1DD121D63FD200249ACD /* ReadMe in Resources */,
 				B1ED1DCF21D5F32B00249ACD /* SettingsShow.storyboard in Resources */,
 				B1ED1DAA21D5C97C00249ACD /* LaunchScreen.storyboard in Resources */,
 				B1ED1DA721D5C97C00249ACD /* Assets.xcassets in Resources */,
