@@ -55,13 +55,37 @@
 			isa = PBXGroup;
 			children = (
 				B1ED1D9F21D5C97A00249ACD /* AppDelegate.swift */,
-				B1ED1DA121D5C97A00249ACD /* ViewController.swift */,
-				B1ED1DA321D5C97A00249ACD /* Main.storyboard */,
-				B1ED1DA621D5C97C00249ACD /* Assets.xcassets */,
-				B1ED1DA821D5C97C00249ACD /* LaunchScreen.storyboard */,
-				B1ED1DAB21D5C97C00249ACD /* Info.plist */,
+				B1ED1DB221D5CA7A00249ACD /* Scenes */,
+				B1ED1DB121D5CA7000249ACD /* Storyboards */,
+				B1ED1DB321D5CA9900249ACD /* Resource Files */,
 			);
 			path = Geofencing;
+			sourceTree = "<group>";
+		};
+		B1ED1DB121D5CA7000249ACD /* Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				B1ED1DA821D5C97C00249ACD /* LaunchScreen.storyboard */,
+				B1ED1DA321D5C97A00249ACD /* Main.storyboard */,
+			);
+			path = Storyboards;
+			sourceTree = "<group>";
+		};
+		B1ED1DB221D5CA7A00249ACD /* Scenes */ = {
+			isa = PBXGroup;
+			children = (
+				B1ED1DA121D5C97A00249ACD /* ViewController.swift */,
+			);
+			path = Scenes;
+			sourceTree = "<group>";
+		};
+		B1ED1DB321D5CA9900249ACD /* Resource Files */ = {
+			isa = PBXGroup;
+			children = (
+				B1ED1DA621D5C97C00249ACD /* Assets.xcassets */,
+				B1ED1DAB21D5C97C00249ACD /* Info.plist */,
+			);
+			path = "Resource Files";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -283,7 +307,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = Geofencing/Info.plist;
+				INFOPLIST_FILE = "Geofencing/Resource Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -300,7 +324,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = Geofencing/Info.plist;
+				INFOPLIST_FILE = "Geofencing/Resource Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
