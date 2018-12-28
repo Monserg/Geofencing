@@ -16,13 +16,6 @@
 		B1ED1DBF21D5D84500249ACD /* MainShowModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1ED1DB921D5D84500249ACD /* MainShowModels.swift */; };
 		B1ED1DC021D5D84500249ACD /* MainShowViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1ED1DBA21D5D84500249ACD /* MainShowViewController.swift */; };
 		B1ED1DC121D5D84500249ACD /* MainShowInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1ED1DBB21D5D84500249ACD /* MainShowInteractor.swift */; };
-		B1ED1DC821D5D85400249ACD /* SettingsShowPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1ED1DC221D5D85400249ACD /* SettingsShowPresenter.swift */; };
-		B1ED1DC921D5D85400249ACD /* SettingsShowWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1ED1DC321D5D85400249ACD /* SettingsShowWorker.swift */; };
-		B1ED1DCA21D5D85400249ACD /* SettingsShowRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1ED1DC421D5D85400249ACD /* SettingsShowRouter.swift */; };
-		B1ED1DCB21D5D85400249ACD /* SettingsShowModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1ED1DC521D5D85400249ACD /* SettingsShowModels.swift */; };
-		B1ED1DCC21D5D85400249ACD /* SettingsShowViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1ED1DC621D5D85400249ACD /* SettingsShowViewController.swift */; };
-		B1ED1DCD21D5D85400249ACD /* SettingsShowInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1ED1DC721D5D85400249ACD /* SettingsShowInteractor.swift */; };
-		B1ED1DCF21D5F32B00249ACD /* SettingsShow.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B1ED1DCE21D5F32B00249ACD /* SettingsShow.storyboard */; };
 		B1ED1DD121D63FD200249ACD /* ReadMe in Resources */ = {isa = PBXBuildFile; fileRef = B1ED1DD021D63FD200249ACD /* ReadMe */; };
 /* End PBXBuildFile section */
 
@@ -38,13 +31,6 @@
 		B1ED1DB921D5D84500249ACD /* MainShowModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainShowModels.swift; sourceTree = "<group>"; };
 		B1ED1DBA21D5D84500249ACD /* MainShowViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainShowViewController.swift; sourceTree = "<group>"; };
 		B1ED1DBB21D5D84500249ACD /* MainShowInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainShowInteractor.swift; sourceTree = "<group>"; };
-		B1ED1DC221D5D85400249ACD /* SettingsShowPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsShowPresenter.swift; sourceTree = "<group>"; };
-		B1ED1DC321D5D85400249ACD /* SettingsShowWorker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsShowWorker.swift; sourceTree = "<group>"; };
-		B1ED1DC421D5D85400249ACD /* SettingsShowRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsShowRouter.swift; sourceTree = "<group>"; };
-		B1ED1DC521D5D85400249ACD /* SettingsShowModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsShowModels.swift; sourceTree = "<group>"; };
-		B1ED1DC621D5D85400249ACD /* SettingsShowViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsShowViewController.swift; sourceTree = "<group>"; };
-		B1ED1DC721D5D85400249ACD /* SettingsShowInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsShowInteractor.swift; sourceTree = "<group>"; };
-		B1ED1DCE21D5F32B00249ACD /* SettingsShow.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SettingsShow.storyboard; sourceTree = "<group>"; };
 		B1ED1DD021D63FD200249ACD /* ReadMe */ = {isa = PBXFileReference; lastKnownFileType = text; path = ReadMe; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -92,7 +78,6 @@
 			children = (
 				B1ED1DA821D5C97C00249ACD /* LaunchScreen.storyboard */,
 				B1ED1DA321D5C97A00249ACD /* MainShow.storyboard */,
-				B1ED1DCE21D5F32B00249ACD /* SettingsShow.storyboard */,
 			);
 			path = Storyboards;
 			sourceTree = "<group>";
@@ -101,7 +86,6 @@
 			isa = PBXGroup;
 			children = (
 				B1ED1DB421D5D7F200249ACD /* MainShow */,
-				B1ED1DB521D5D82C00249ACD /* SettingsShow */,
 			);
 			path = Scenes;
 			sourceTree = "<group>";
@@ -125,19 +109,6 @@
 				B1ED1DB721D5D84500249ACD /* MainShowWorker.swift */,
 			);
 			path = MainShow;
-			sourceTree = "<group>";
-		};
-		B1ED1DB521D5D82C00249ACD /* SettingsShow */ = {
-			isa = PBXGroup;
-			children = (
-				B1ED1DC721D5D85400249ACD /* SettingsShowInteractor.swift */,
-				B1ED1DC521D5D85400249ACD /* SettingsShowModels.swift */,
-				B1ED1DC221D5D85400249ACD /* SettingsShowPresenter.swift */,
-				B1ED1DC421D5D85400249ACD /* SettingsShowRouter.swift */,
-				B1ED1DC621D5D85400249ACD /* SettingsShowViewController.swift */,
-				B1ED1DC321D5D85400249ACD /* SettingsShowWorker.swift */,
-			);
-			path = SettingsShow;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -199,7 +170,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B1ED1DD121D63FD200249ACD /* ReadMe in Resources */,
-				B1ED1DCF21D5F32B00249ACD /* SettingsShow.storyboard in Resources */,
 				B1ED1DAA21D5C97C00249ACD /* LaunchScreen.storyboard in Resources */,
 				B1ED1DA721D5C97C00249ACD /* Assets.xcassets in Resources */,
 				B1ED1DA521D5C97A00249ACD /* MainShow.storyboard in Resources */,
@@ -213,17 +183,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B1ED1DCC21D5D85400249ACD /* SettingsShowViewController.swift in Sources */,
-				B1ED1DC821D5D85400249ACD /* SettingsShowPresenter.swift in Sources */,
 				B1ED1DC121D5D84500249ACD /* MainShowInteractor.swift in Sources */,
-				B1ED1DCD21D5D85400249ACD /* SettingsShowInteractor.swift in Sources */,
-				B1ED1DCB21D5D85400249ACD /* SettingsShowModels.swift in Sources */,
-				B1ED1DC921D5D85400249ACD /* SettingsShowWorker.swift in Sources */,
 				B1ED1DBD21D5D84500249ACD /* MainShowWorker.swift in Sources */,
 				B1ED1DBC21D5D84500249ACD /* MainShowPresenter.swift in Sources */,
 				B1ED1DBF21D5D84500249ACD /* MainShowModels.swift in Sources */,
 				B1ED1DC021D5D84500249ACD /* MainShowViewController.swift in Sources */,
-				B1ED1DCA21D5D85400249ACD /* SettingsShowRouter.swift in Sources */,
 				B1ED1DA021D5C97A00249ACD /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

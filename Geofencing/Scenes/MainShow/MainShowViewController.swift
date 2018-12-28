@@ -38,6 +38,22 @@ class MainShowViewController: UIViewController {
         }
     }
     
+    @IBOutlet var roundButtonsCollection: [UIButton]! {
+        didSet {
+            self.roundButtonsCollection.forEach({ $0.layer.cornerRadius = $0.frame.height  / 2
+                $0.layer.borderWidth = 1.0
+                $0.layer.borderColor = UIColor.darkGray.cgColor
+                $0.clipsToBounds = true
+            })
+        }
+    }
+    
+    @IBOutlet weak var flatPanelViewTopConstraint: NSLayoutConstraint! {
+        didSet {
+            self.flatPanelViewTopConstraint.constant = -216.0
+        }
+    }
+    
     
     // MARK: - Class Initialization
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -90,6 +106,37 @@ class MainShowViewController: UIViewController {
     // MARK: - Actions
     @IBAction func currentLocationBarButtonItemTap(_ sender: UIBarButtonItem) {
         print("MainViewController: current location bar button item tapped...")
+    }
+    
+    @IBAction func settingsBarButtonItemTap(_ sender: Any) {
+        print("MainViewController: settings bar button item tapped...")
+    
+        self.flatPanelViewTopConstraint.constant = self.flatPanelViewTopConstraint.constant == -216.0 ? 0.0 : -216.0
+        
+        UIView.animate(withDuration: 0.3) {
+            self.view.layoutIfNeeded()
+        }
+    }
+    
+    // Settings buttons
+    @IBAction func settingsCurrentLocationButtonTap(_ sender: UIButton) {
+        print("MainViewController: settings current location button tapped...")
+
+    }
+    
+    @IBAction func settingsEnteringGeofenceButtonTap(_ sender: UIButton) {
+        print("MainViewController: settings entering geofence button tapped...")
+
+    }
+    
+    @IBAction func settingsWiFiButtonTap(_ sender: UIButton) {
+        print("MainViewController: settings Wi-Fi button tapped...")
+
+    }
+   
+    @IBAction func settingsRadiusButtonTap(_ sender: UIButton) {
+        print("MainViewController: settings radius button tapped...")
+
     }
 }
 

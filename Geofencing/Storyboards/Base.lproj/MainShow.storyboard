@@ -21,46 +21,161 @@
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="G9U-qO-zGb">
                                 <rect key="frame" x="0.0" y="88" width="414" height="808"/>
                             </mapView>
+                            <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1pD-Dk-gHI" userLabel="Flat Panel View">
+                                <rect key="frame" x="258" y="88" width="144" height="216"/>
+                                <subviews>
+                                    <button clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="r6z-GH-iBC" userLabel="Settings Current Location Button">
+                                        <rect key="frame" x="100" y="10" width="44" height="44"/>
+                                        <color key="backgroundColor" red="0.1843137255" green="0.49019607840000001" blue="0.98431372549999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="44" id="FF7-Hx-v8V"/>
+                                            <constraint firstAttribute="width" secondItem="r6z-GH-iBC" secondAttribute="height" multiplier="1:1" id="bBv-d1-gIv"/>
+                                        </constraints>
+                                        <state key="normal" image="icon-current-location-default"/>
+                                        <state key="highlighted" image="icon-current-location-highlighted"/>
+                                        <connections>
+                                            <action selector="settingsCurrentLocationButtonTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="5lL-bD-NzV"/>
+                                        </connections>
+                                    </button>
+                                    <button clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oxt-Zy-jni" userLabel="Settings Entering Geofence Button">
+                                        <rect key="frame" x="100" y="64" width="44" height="44"/>
+                                        <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="oxt-Zy-jni" secondAttribute="height" multiplier="1:1" id="4Aq-eB-rxw"/>
+                                            <constraint firstAttribute="width" constant="44" id="dZy-pE-nur"/>
+                                        </constraints>
+                                        <state key="normal" image="icon-settings-entering-geo-fence-default"/>
+                                        <state key="highlighted" image="icon-settings-entering-geo-fence-highlighted"/>
+                                        <connections>
+                                            <action selector="settingsEnteringGeofenceButtonTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="6OE-6v-ahk"/>
+                                        </connections>
+                                    </button>
+                                    <button clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oN6-5H-pdp" userLabel="Settings Wi-Fi Button">
+                                        <rect key="frame" x="100" y="118" width="44" height="44"/>
+                                        <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="44" id="4Z6-2i-THC"/>
+                                            <constraint firstAttribute="width" secondItem="oN6-5H-pdp" secondAttribute="height" multiplier="1:1" id="eF7-gP-1Xx"/>
+                                        </constraints>
+                                        <state key="normal" image="icon-settings-wifi-default"/>
+                                        <state key="highlighted" image="icon-settings-wifi-highlighted"/>
+                                        <connections>
+                                            <action selector="settingsWiFiButtonTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="o4a-kK-7nw"/>
+                                        </connections>
+                                    </button>
+                                    <button clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6ll-FR-1B0" userLabel="Settings Radius Button">
+                                        <rect key="frame" x="100" y="172" width="44" height="44"/>
+                                        <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="44" id="1UB-ve-aTA"/>
+                                            <constraint firstAttribute="width" secondItem="6ll-FR-1B0" secondAttribute="height" multiplier="1:1" id="Fw7-oj-6Yh"/>
+                                        </constraints>
+                                        <state key="normal" image="icon-settings-radius-default">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <color key="titleShadowColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <state key="highlighted" image="icon-settings-radius-highlighted"/>
+                                        <connections>
+                                            <action selector="settingsRadiusButtonTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Uog-ba-Cgh"/>
+                                        </connections>
+                                    </button>
+                                    <label clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Location" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NbN-IR-CHp" userLabel="Settings Current Location Label">
+                                        <rect key="frame" x="8" y="21.5" width="80" height="21"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <fontDescription key="fontDescription" type="system" weight="medium" pointSize="18"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Geofence" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="izz-O7-aod" userLabel="Settings Entering Geofence Label">
+                                        <rect key="frame" x="8" y="75.5" width="80" height="21"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <fontDescription key="fontDescription" type="system" weight="medium" pointSize="18"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Wi-Fi" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h11-zl-iIH" userLabel="Settings Entering Wi-Fi Label">
+                                        <rect key="frame" x="8" y="129.5" width="80" height="21.5"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <fontDescription key="fontDescription" type="system" weight="medium" pointSize="18"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Radius" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="but-yp-kWA" userLabel="Settings Radius Label">
+                                        <rect key="frame" x="8" y="183.5" width="80" height="21"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <fontDescription key="fontDescription" type="system" weight="medium" pointSize="18"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstItem="r6z-GH-iBC" firstAttribute="centerY" secondItem="NbN-IR-CHp" secondAttribute="centerY" id="0KF-b5-1vg"/>
+                                    <constraint firstItem="6ll-FR-1B0" firstAttribute="top" secondItem="oN6-5H-pdp" secondAttribute="bottom" constant="10" id="3fp-dc-3SC"/>
+                                    <constraint firstItem="oxt-Zy-jni" firstAttribute="top" secondItem="r6z-GH-iBC" secondAttribute="bottom" constant="10" id="3vx-RU-jzX"/>
+                                    <constraint firstItem="oN6-5H-pdp" firstAttribute="leading" secondItem="h11-zl-iIH" secondAttribute="trailing" constant="12" id="DgP-KT-IKg"/>
+                                    <constraint firstItem="h11-zl-iIH" firstAttribute="leading" secondItem="1pD-Dk-gHI" secondAttribute="leading" constant="8" id="IoE-dA-kmN"/>
+                                    <constraint firstAttribute="bottom" secondItem="6ll-FR-1B0" secondAttribute="bottom" id="KUc-Bz-T6u"/>
+                                    <constraint firstItem="r6z-GH-iBC" firstAttribute="leading" secondItem="NbN-IR-CHp" secondAttribute="trailing" constant="12" id="Owq-fu-v16"/>
+                                    <constraint firstAttribute="trailing" secondItem="r6z-GH-iBC" secondAttribute="trailing" id="Tqy-VH-rIt"/>
+                                    <constraint firstItem="NbN-IR-CHp" firstAttribute="leading" secondItem="1pD-Dk-gHI" secondAttribute="leading" constant="8" id="UQo-FY-44R"/>
+                                    <constraint firstAttribute="width" constant="144" id="VCa-dS-gNc"/>
+                                    <constraint firstItem="oxt-Zy-jni" firstAttribute="leading" secondItem="izz-O7-aod" secondAttribute="trailing" constant="12" id="Ztg-fL-c6b"/>
+                                    <constraint firstAttribute="width" secondItem="1pD-Dk-gHI" secondAttribute="height" multiplier="144:216" id="dSt-eO-ndn"/>
+                                    <constraint firstItem="oN6-5H-pdp" firstAttribute="top" secondItem="oxt-Zy-jni" secondAttribute="bottom" constant="10" id="fgy-NM-zgs"/>
+                                    <constraint firstItem="oN6-5H-pdp" firstAttribute="centerY" secondItem="h11-zl-iIH" secondAttribute="centerY" id="pIM-zG-Ykb"/>
+                                    <constraint firstAttribute="trailing" secondItem="oxt-Zy-jni" secondAttribute="trailing" id="pc9-nD-ffk"/>
+                                    <constraint firstAttribute="trailing" secondItem="oN6-5H-pdp" secondAttribute="trailing" id="rKu-ap-IE1"/>
+                                    <constraint firstItem="oxt-Zy-jni" firstAttribute="centerY" secondItem="izz-O7-aod" secondAttribute="centerY" id="rcN-Ye-PGQ"/>
+                                    <constraint firstItem="6ll-FR-1B0" firstAttribute="leading" secondItem="but-yp-kWA" secondAttribute="trailing" constant="12" id="rl6-9V-2on"/>
+                                    <constraint firstItem="but-yp-kWA" firstAttribute="leading" secondItem="1pD-Dk-gHI" secondAttribute="leading" constant="8" id="tMc-s7-BLB"/>
+                                    <constraint firstItem="6ll-FR-1B0" firstAttribute="centerY" secondItem="but-yp-kWA" secondAttribute="centerY" id="vH1-fC-BPE"/>
+                                    <constraint firstItem="izz-O7-aod" firstAttribute="leading" secondItem="1pD-Dk-gHI" secondAttribute="leading" constant="8" id="vri-0d-SBY"/>
+                                    <constraint firstAttribute="trailing" secondItem="6ll-FR-1B0" secondAttribute="trailing" id="vub-oE-M7C"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="isShow" value="NO"/>
+                                </userDefinedRuntimeAttributes>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="1pD-Dk-gHI" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="050-qO-u32"/>
                             <constraint firstItem="G9U-qO-zGb" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="HDL-yc-Zx0"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="G9U-qO-zGb" secondAttribute="trailing" id="LVF-g1-5kB"/>
                             <constraint firstAttribute="bottom" secondItem="G9U-qO-zGb" secondAttribute="bottom" id="LeI-cd-lkz"/>
                             <constraint firstItem="G9U-qO-zGb" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="fKZ-dy-67M"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="1pD-Dk-gHI" secondAttribute="trailing" constant="12" id="uex-rK-dbB"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <navigationItem key="navigationItem" title="Map" id="cZ0-6r-fL9">
-                        <barButtonItem key="leftBarButtonItem" image="icon-current-location" id="REJ-db-xjI" userLabel="Current Location Item">
+                        <barButtonItem key="leftBarButtonItem" image="icon-current-location-default" id="REJ-db-xjI" userLabel="Current Location Item">
                             <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <connections>
                                 <action selector="currentLocationBarButtonItemTap:" destination="BYZ-38-t0r" id="5UG-AU-hCk"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" image="icon-settings" id="oIp-hQ-2Nt" userLabel="Settings Bar Button Item">
+                        <barButtonItem key="rightBarButtonItem" image="icon-settings-default" id="oIp-hQ-2Nt" userLabel="Settings Bar Button Item">
                             <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <connections>
-                                <segue destination="2yf-kL-29w" kind="show" identifier="settingsShowSegue" id="NRI-Ni-LCk"/>
+                                <action selector="settingsBarButtonItemTap:" destination="BYZ-38-t0r" id="3IN-8t-gHY"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="currentLocationBarButtonItem" destination="REJ-db-xjI" id="0ev-Ah-HQ8"/>
+                        <outlet property="flatPanelViewTopConstraint" destination="050-qO-u32" id="oCH-Ve-RM5"/>
                         <outlet property="mapView" destination="G9U-qO-zGb" id="J1X-zJ-Jda"/>
+                        <outletCollection property="roundButtonsCollection" destination="oxt-Zy-jni" collectionClass="NSMutableArray" id="AVF-jV-g8g"/>
+                        <outletCollection property="roundButtonsCollection" destination="oN6-5H-pdp" collectionClass="NSMutableArray" id="JMJ-3Q-Pxs"/>
+                        <outletCollection property="roundButtonsCollection" destination="6ll-FR-1B0" collectionClass="NSMutableArray" id="wyr-G2-jqC"/>
+                        <outletCollection property="roundButtonsCollection" destination="r6z-GH-iBC" collectionClass="NSMutableArray" id="302-zc-vge"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="955" y="-573"/>
-        </scene>
-        <!--SettingsShowVC-->
-        <scene sceneID="wHc-OQ-IZg">
-            <objects>
-                <viewControllerPlaceholder storyboardName="SettingsShow" referencedIdentifier="SettingsShowVC" id="2yf-kL-29w" sceneMemberID="viewController"/>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="hwk-Dk-38c" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1545" y="-573"/>
+            <point key="canvasLocation" x="953.62318840579712" y="-573.21428571428567"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="eb9-Ag-WTR">
@@ -83,7 +198,14 @@
         </scene>
     </scenes>
     <resources>
-        <image name="icon-current-location" width="30" height="30"/>
-        <image name="icon-settings" width="30" height="30"/>
+        <image name="icon-current-location-default" width="30" height="30"/>
+        <image name="icon-current-location-highlighted" width="30" height="30"/>
+        <image name="icon-settings-default" width="30" height="30"/>
+        <image name="icon-settings-entering-geo-fence-default" width="24" height="24"/>
+        <image name="icon-settings-entering-geo-fence-highlighted" width="24" height="24"/>
+        <image name="icon-settings-radius-default" width="24" height="24"/>
+        <image name="icon-settings-radius-highlighted" width="24" height="24"/>
+        <image name="icon-settings-wifi-default" width="24" height="24"/>
+        <image name="icon-settings-wifi-highlighted" width="24" height="24"/>
     </resources>
 </document>
