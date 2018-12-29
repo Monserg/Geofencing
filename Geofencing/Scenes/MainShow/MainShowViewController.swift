@@ -29,12 +29,6 @@ class MainShowViewController: UIViewController {
     
     
     // MARK: - IBOutlets
-    @IBOutlet weak var currentLocationBarButtonItem: UIBarButtonItem! {
-        didSet {
-            self.currentLocationBarButtonItem.isEnabled = false
-        }
-    }
-
     @IBOutlet weak var mapView: MKMapView! {
         didSet {
             self.mapView.delegate = self
@@ -116,10 +110,6 @@ class MainShowViewController: UIViewController {
     
     
     // MARK: - Actions
-    @IBAction func currentLocationBarButtonItemTap(_ sender: UIBarButtonItem) {
-        print("MainViewController: current location bar button item tapped...")
-    }
-    
     @IBAction func settingsBarButtonItemTap(_ sender: Any) {
         print("MainViewController: settings bar button item tapped...")
     

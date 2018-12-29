@@ -195,12 +195,6 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <navigationItem key="navigationItem" title="Map" id="cZ0-6r-fL9">
-                        <barButtonItem key="leftBarButtonItem" image="icon-current-location-default" id="REJ-db-xjI" userLabel="Current Location Item">
-                            <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            <connections>
-                                <action selector="currentLocationBarButtonItemTap:" destination="BYZ-38-t0r" id="5UG-AU-hCk"/>
-                            </connections>
-                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" image="icon-settings-default" id="oIp-hQ-2Nt" userLabel="Settings Bar Button Item">
                             <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <connections>
@@ -209,7 +203,6 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="currentLocationBarButtonItem" destination="REJ-db-xjI" id="0ev-Ah-HQ8"/>
                         <outlet property="flatPanelViewTopConstraint" destination="050-qO-u32" id="oCH-Ve-RM5"/>
                         <outlet property="mapView" destination="G9U-qO-zGb" id="J1X-zJ-Jda"/>
                         <outletCollection property="roundButtonsCollection" destination="oxt-Zy-jni" collectionClass="NSMutableArray" id="AVF-jV-g8g"/>
