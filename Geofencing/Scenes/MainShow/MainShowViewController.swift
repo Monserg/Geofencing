@@ -24,11 +24,35 @@ class MainShowViewController: UIViewController {
     private let flatPanelShow: CGFloat = 0.0
     private let flatPanelHide: CGFloat = -280.0
     
+    private let pickerView: UIPickerView = UIPickerView()
+    private var pickerViewDataSource: [Any] = ["one", "two", "three", "seven", "fifteen"]
+    
+    private var settingsRadiusIndex: Int = 0
+    private var settingsRadiusValue: Float = UserDefaults.standard.float(forKey: settingsRadiusKey)
+
+    private var accessoryToolbar: UIToolbar {
+        get {
+            let toolbarFrame = CGRect(x: 0.0, y: 0.0, width: view.frame.width, height: 44.0)
+            let accessoryToolbar = UIToolbar(frame: toolbarFrame)
+            let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(onDoneButtonTapped(sender:)))
+            let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+            
+            accessoryToolbar.tintColor = .white
+            accessoryToolbar.barTintColor = .lightGray
+            accessoryToolbar.items = [flexibleSpace, doneButton]
+
+            return accessoryToolbar
+        }
+    }
+    
     var interactor: MainShowBusinessLogic?
     var router: NSObjectProtocol?
     
     
     // MARK: - IBOutlets
+    @IBOutlet weak var flatPanelView: UIView!
+    @IBOutlet weak var pickerTextField: UITextField!
+    
     @IBOutlet weak var mapView: MKMapView! {
         didSet {
             self.mapView.delegate = self
@@ -82,13 +106,23 @@ class MainShowViewController: UIViewController {
         presenter.viewController    =   viewController
     }
     
+    private func setupUI() {
+        self.pickerView.delegate = self
+        self.pickerView.dataSource = self
+        self.pickerView.backgroundColor = UIColor.white
+        
+        self.pickerTextField.inputView = pickerView
+        self.pickerTextField.inputAccessoryView = accessoryToolbar
+    }
     
+
     // MARK: - Class Functions
     override func viewDidLoad() {
         super.viewDidLoad()
         
         print("MainViewController:  viewDidLoad run...")
 
+        self.setupUI()
         self.loadViewSettings()
     }
     
@@ -102,7 +136,7 @@ class MainShowViewController: UIViewController {
     private func flatPanel(hide: Bool) {
         // Hide flat panel
         self.flatPanelViewTopConstraint.constant = hide ? self.flatPanelHide : self.flatPanelShow
-
+        
         UIView.animate(withDuration: 0.3) {
             self.view.layoutIfNeeded()
         }
@@ -119,32 +153,51 @@ class MainShowViewController: UIViewController {
         self.flatPanel(hide: false)
     }
     
+    // Picker view buttons
+    @objc func onDoneButtonTapped(sender: UIBarButtonItem) {
+        if self.pickerTextField.isFirstResponder {
+            self.pickerTextField.resignFirstResponder()
+        }
+
+        self.flatPanelView.isUserInteractionEnabled = true
+    }
+    
+    
     // Settings buttons
     @IBAction func settingsCurrentLocationButtonTap(_ sender: UIButton) {
         print("MainViewController: settings current location button tapped...")
 
+//        self.flatPanelView.isUserInteractionEnabled = false
     }
     
     @IBAction func settingsEnteringGeofenceButtonTap(_ sender: UIButton) {
         print("MainViewController: settings entering geofence button tapped...")
 
+//        self.flatPanelView.isUserInteractionEnabled = false
     }
     
     @IBAction func settingsWiFiButtonTap(_ sender: UIButton) {
         print("MainViewController: settings Wi-Fi button tapped...")
 
+//        self.flatPanelView.isUserInteractionEnabled = false
     }
    
     @IBAction func settingsRadiusButtonTap(_ sender: UIButton) {
         print("MainViewController: settings radius button tapped...")
 
+        self.pickerViewDataSource = Array(1...1000).compactMap({ $0 * 100 })
+        self.pickerTextField.becomeFirstResponder()
+        self.settingsRadiusIndex = (self.pickerViewDataSource as! [Int]).firstIndex(of: Int(self.settingsRadiusValue)) ?? 0
+        
+        self.pickerView.selectRow(self.settingsRadiusIndex, inComponent: 0, animated: true)
+        self.flatPanelView.isUserInteractionEnabled = false
     }
     
     @IBAction func settingsReadyButtonTap(_ sender: UIButton) {
         print("MainViewController: settings ready button tapped...")
      
         // Modify stored properties
-        
+        UserDefaults.standard.set(self.settingsRadiusValue, forKey: settingsRadiusKey)
         
         // Hide flat panel
         self.flatPanel(hide: true)
@@ -207,6 +260,7 @@ extension MainShowViewController: MKMapViewDelegate {
             circleRenderer.lineWidth = 1.0
             circleRenderer.strokeColor = .purple
             circleRenderer.fillColor = UIColor.purple.withAlphaComponent(0.4)
+            
             return circleRenderer
         }
         
@@ -218,5 +272,41 @@ extension MainShowViewController: MKMapViewDelegate {
 //        let geotification = view.annotation as! Geotification
 //        remove(geotification)
 //        saveAllGeotifications()
+    }
+}
+
+
+// MARK: - UIPickerViewDataSource
+extension MainShowViewController: UIPickerViewDataSource {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return self.pickerViewDataSource.count
+    }
+}
+
+
+// MARK: - UIPickerViewDelegate
+extension MainShowViewController: UIPickerViewDelegate {
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        if let titleString = self.pickerViewDataSource[row] as? String {
+            return titleString
+        }
+        
+        else if let titleInt = self.pickerViewDataSource[row] as? Int {
+            return String(format: "%d", titleInt)
+        }
+        
+        return nil
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        // Modify stored properties
+        if let valueInt = self.pickerViewDataSource[row] as? Int {
+            self.settingsRadiusIndex = row
+            self.settingsRadiusValue = Float(valueInt)
+        }
     }
 }

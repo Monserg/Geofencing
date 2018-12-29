@@ -18,6 +18,12 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="ewL-C6-axe">
+                                <rect key="frame" x="0.0" y="88" width="25" height="30"/>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="G9U-qO-zGb">
                                 <rect key="frame" x="0.0" y="88" width="414" height="808"/>
                             </mapView>
@@ -178,18 +184,17 @@
                                     <constraint firstAttribute="trailing" secondItem="HcQ-7l-RDE" secondAttribute="trailing" id="vsH-XS-kaK"/>
                                     <constraint firstAttribute="trailing" secondItem="6ll-FR-1B0" secondAttribute="trailing" id="vub-oE-M7C"/>
                                 </constraints>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="boolean" keyPath="isShow" value="NO"/>
-                                </userDefinedRuntimeAttributes>
                             </view>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="1pD-Dk-gHI" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="050-qO-u32"/>
+                            <constraint firstItem="ewL-C6-axe" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="ErH-sK-Ufo"/>
                             <constraint firstItem="G9U-qO-zGb" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="HDL-yc-Zx0"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="G9U-qO-zGb" secondAttribute="trailing" id="LVF-g1-5kB"/>
                             <constraint firstAttribute="bottom" secondItem="G9U-qO-zGb" secondAttribute="bottom" id="LeI-cd-lkz"/>
                             <constraint firstItem="G9U-qO-zGb" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="fKZ-dy-67M"/>
+                            <constraint firstItem="ewL-C6-axe" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="prG-Hz-qag"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="1pD-Dk-gHI" secondAttribute="trailing" constant="12" id="uex-rK-dbB"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
@@ -203,8 +208,10 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="flatPanelView" destination="1pD-Dk-gHI" id="1S6-yP-PID"/>
                         <outlet property="flatPanelViewTopConstraint" destination="050-qO-u32" id="oCH-Ve-RM5"/>
                         <outlet property="mapView" destination="G9U-qO-zGb" id="J1X-zJ-Jda"/>
+                        <outlet property="pickerTextField" destination="ewL-C6-axe" id="PMd-SQ-EQ3"/>
                         <outletCollection property="roundButtonsCollection" destination="oxt-Zy-jni" collectionClass="NSMutableArray" id="AVF-jV-g8g"/>
                         <outletCollection property="roundButtonsCollection" destination="oN6-5H-pdp" collectionClass="NSMutableArray" id="JMJ-3Q-Pxs"/>
                         <outletCollection property="roundButtonsCollection" destination="6ll-FR-1B0" collectionClass="NSMutableArray" id="wyr-G2-jqC"/>
