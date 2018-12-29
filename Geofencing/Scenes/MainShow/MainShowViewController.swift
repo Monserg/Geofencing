@@ -13,6 +13,8 @@
 import UIKit
 import MapKit
 import CoreLocation
+import Reachability
+import SystemConfiguration.CaptiveNetwork
 
 // MARK: - Input & Output protocols
 protocol MainShowDisplayLogic: class {
@@ -25,10 +27,13 @@ class MainShowViewController: UIViewController {
     private let flatPanelHide: CGFloat = -280.0
     
     private let pickerView: UIPickerView = UIPickerView()
-    private var pickerViewDataSource: [Any] = ["one", "two", "three", "seven", "fifteen"]
+    private var pickerViewDataSource: [Any] = [String]()
     
     private var settingsRadiusIndex: Int = 0
     private var settingsRadiusValue: Float = UserDefaults.standard.float(forKey: settingsRadiusKey)
+
+    private var settingsWiFiIndex: Int = 0
+    private var settingsWiFiValue: String = UserDefaults.standard.string(forKey: settingsWiFiKey) ?? "XXX"
 
     private var accessoryToolbar: UIToolbar {
         get {
@@ -45,6 +50,8 @@ class MainShowViewController: UIViewController {
         }
     }
     
+    var reachability: Reachability!
+
     var interactor: MainShowBusinessLogic?
     var router: NSObjectProtocol?
     
@@ -52,6 +59,12 @@ class MainShowViewController: UIViewController {
     // MARK: - IBOutlets
     @IBOutlet weak var flatPanelView: UIView!
     @IBOutlet weak var pickerTextField: UITextField!
+    
+    // UIButtons
+    @IBOutlet weak var settingsWiFiButton: UIButton!
+    @IBOutlet weak var settingsRadiusButton: UIButton!
+    @IBOutlet weak var settingsGeofenceButton: UIButton!
+    @IBOutlet weak var settingsCurrentLocationButton: UIButton!
     
     @IBOutlet weak var mapView: MKMapView! {
         didSet {
@@ -90,7 +103,10 @@ class MainShowViewController: UIViewController {
     }
 
     deinit {
-        print("MainShowViewController: deinit...")
+        print("MainShowViewController: function: \(#function), line: \(#line)")
+
+        NotificationCenter.default.removeObserver(self, name: .reachabilityChanged, object: reachability)
+        self.reachability.stopNotifier()
     }
     
     
@@ -119,11 +135,27 @@ class MainShowViewController: UIViewController {
     // MARK: - Class Functions
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        print("MainViewController:  viewDidLoad run...")
+        print("MainShowViewController: function: \(#function), line: \(#line)")
 
         self.setupUI()
         self.loadViewSettings()
+        
+        // Reachability
+        NotificationCenter.default.addObserver(self, selector: #selector(reachabilityChanged(note:)), name: .reachabilityChanged, object: reachability)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        print("MainShowViewController: function: \(#function), line: \(#line)")
+
+        // Reachability
+        self.reachability = Reachability.init()
+        
+        do {
+            try self.reachability.startNotifier()
+        } catch {
+            print("MainViewController: unable to start notifier")
+        }
     }
     
     
@@ -142,60 +174,97 @@ class MainShowViewController: UIViewController {
         }
     }
     
+    private func getAllWiFiNames() -> [String]? {
+        var ssids: [String]? = [String]()
+        
+        if let interfaces = CNCopySupportedInterfaces() as NSArray? {
+            for interface in interfaces {
+                if let interfaceName = interface as? String {
+                    ssids?.append(interfaceName)
+                }
+            }
+        }
+        
+        return ssids
+    }
+    
+    private func showAlertView(withMessage message: String) {
+        let alert = UIAlertController(title: "Info", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { _ in }))
+        
+        self.present(alert, animated: true, completion: nil)
+        
+        self.settingsWiFiButton.isEnabled = self.reachability.connection == .wifi
+        self.settingsGeofenceButton.isEnabled = self.reachability.connection == .wifi
+        self.settingsCurrentLocationButton.isEnabled = self.reachability.connection == .wifi
+    }
+    
     
     // MARK: - Actions
     @IBAction func settingsBarButtonItemTap(_ sender: Any) {
-        print("MainViewController: settings bar button item tapped...")
-    
+        print("MainShowViewController: function: \(#function), line: \(#line)")
+
         guard self.flatPanelViewTopConstraint.constant == self.flatPanelHide else { return }
         
         // Show flat panel
         self.flatPanel(hide: false)
     }
     
-    // Picker view buttons
-    @objc func onDoneButtonTapped(sender: UIBarButtonItem) {
-        if self.pickerTextField.isFirstResponder {
-            self.pickerTextField.resignFirstResponder()
-        }
-
-        self.flatPanelView.isUserInteractionEnabled = true
-    }
-    
-    
     // Settings buttons
     @IBAction func settingsCurrentLocationButtonTap(_ sender: UIButton) {
-        print("MainViewController: settings current location button tapped...")
+        print("MainShowViewController: function: \(#function), line: \(#line)")
 
 //        self.flatPanelView.isUserInteractionEnabled = false
     }
     
     @IBAction func settingsEnteringGeofenceButtonTap(_ sender: UIButton) {
-        print("MainViewController: settings entering geofence button tapped...")
+        print("MainShowViewController: function: \(#function), line: \(#line)")
 
 //        self.flatPanelView.isUserInteractionEnabled = false
     }
     
     @IBAction func settingsWiFiButtonTap(_ sender: UIButton) {
-        print("MainViewController: settings Wi-Fi button tapped...")
+        print("MainShowViewController: function: \(#function), line: \(#line)")
 
-//        self.flatPanelView.isUserInteractionEnabled = false
+        if let networkNames = self.getAllWiFiNames() {
+            print("MainShowViewController: function: \(#function), line: \(#line)")
+
+            self.pickerViewDataSource = networkNames
+            self.pickerTextField.becomeFirstResponder()
+            
+            if self.settingsWiFiValue == "XXX" {
+                self.settingsWiFiIndex = 0
+                self.settingsWiFiValue = networkNames[0]
+                UserDefaults.standard.set(self.settingsWiFiValue, forKey: settingsWiFiKey)
+            }
+            
+            else {
+                self.settingsWiFiIndex = (self.pickerViewDataSource as! [String]).firstIndex(of: self.settingsWiFiValue) ?? 0
+            }
+            
+            self.pickerView.selectRow(self.settingsWiFiIndex, inComponent: 0, animated: true)
+            self.flatPanelView.isUserInteractionEnabled = false
+            sender.isSelected = true
+        }
     }
    
     @IBAction func settingsRadiusButtonTap(_ sender: UIButton) {
-        print("MainViewController: settings radius button tapped...")
+        print("MainShowViewController: function: \(#function), line: \(#line)")
 
         self.pickerViewDataSource = Array(1...1000).compactMap({ $0 * 100 })
         self.pickerTextField.becomeFirstResponder()
+        
+        self.settingsRadiusValue = UserDefaults.standard.float(forKey: settingsRadiusKey)
         self.settingsRadiusIndex = (self.pickerViewDataSource as! [Int]).firstIndex(of: Int(self.settingsRadiusValue)) ?? 0
         
         self.pickerView.selectRow(self.settingsRadiusIndex, inComponent: 0, animated: true)
         self.flatPanelView.isUserInteractionEnabled = false
+        sender.isSelected = true
     }
     
     @IBAction func settingsReadyButtonTap(_ sender: UIButton) {
-        print("MainViewController: settings ready button tapped...")
-     
+        print("MainShowViewController: function: \(#function), line: \(#line)")
+
         // Modify stored properties
         UserDefaults.standard.set(self.settingsRadiusValue, forKey: settingsRadiusKey)
         
@@ -204,20 +273,58 @@ class MainShowViewController: UIViewController {
     }
 
     @IBAction func settingsCancelButtonTap(_ sender: UIButton) {
-        print("MainViewController: settings cancel button tapped...")
-        
+        print("MainShowViewController: function: \(#function), line: \(#line)")
+
         // Hide flat panel without change stored properties
         self.flatPanel(hide: true)
     }
 
     @IBAction func settingsDeleteButtonTap(_ sender: UIButton) {
-        print("MainViewController: settings delete button tapped...")
-        
+        print("MainShowViewController: function: \(#function), line: \(#line)")
+
         // Clean all stored properties
+        UserDefaults.standard.dictionaryRepresentation().keys.forEach { key in
+            UserDefaults.standard.removeObject(forKey: key)
+        }
         
+        self.settingsWiFiIndex = 0
+        self.settingsWiFiValue = ""
+        
+        self.settingsRadiusIndex = 0
+        self.settingsRadiusValue = 0.0
         
         // Hide flat panel
         self.flatPanel(hide: true)
+    }
+    
+    // Picker view buttons
+    @objc func onDoneButtonTapped(sender: UIBarButtonItem) {
+        print("MainShowViewController: function: \(#function), line: \(#line)")
+
+        if self.pickerTextField.isFirstResponder {
+            self.pickerTextField.resignFirstResponder()
+        }
+        
+        self.roundButtonsCollection.forEach({ $0.isSelected = false })
+        self.flatPanelView.isUserInteractionEnabled = true
+    }
+
+    // Notification
+    @objc func reachabilityChanged(note: Notification) {
+        print("MainShowViewController: function: \(#function), line: \(#line)")
+
+        let reachability = note.object as! Reachability
+        
+        switch reachability.connection {
+        case .wifi:
+            self.showAlertView(withMessage: "Reachable via Wi-Fi")
+        
+        case .cellular:
+            self.showAlertView(withMessage: "Reachable via Cellular")
+
+        case .none:
+            self.showAlertView(withMessage: "Network not reachable")
+        }
     }
 }
 
@@ -234,6 +341,8 @@ extension MainShowViewController: MainShowDisplayLogic {
 // MARK: - MKMapViewDelegate
 extension MainShowViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        print("MainShowViewController: function: \(#function), line: \(#line)")
+
 //        let identifier = "myGeotification"
 //        if annotation is Geotification {
 //            var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKPinAnnotationView
@@ -255,6 +364,8 @@ extension MainShowViewController: MKMapViewDelegate {
     
     
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        print("MainShowViewController: function: \(#function), line: \(#line)")
+
         if overlay is MKCircle {
             let circleRenderer = MKCircleRenderer(overlay: overlay)
             circleRenderer.lineWidth = 1.0
@@ -268,6 +379,8 @@ extension MainShowViewController: MKMapViewDelegate {
     }
     
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+        print("MainShowViewController: function: \(#function), line: \(#line)")
+
         // Delete geotification
 //        let geotification = view.annotation as! Geotification
 //        remove(geotification)
@@ -303,10 +416,17 @@ extension MainShowViewController: UIPickerViewDelegate {
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        print("MainShowViewController: function: \(#function), line: \(#line)")
+
         // Modify stored properties
         if let valueInt = self.pickerViewDataSource[row] as? Int {
             self.settingsRadiusIndex = row
             self.settingsRadiusValue = Float(valueInt)
+        }
+        
+        else if let valueString = self.pickerViewDataSource[row] as? String {
+            self.settingsWiFiIndex = row
+            self.settingsWiFiValue = valueString
         }
     }
 }

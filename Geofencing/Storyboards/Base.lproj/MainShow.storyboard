@@ -28,7 +28,7 @@
                                 <rect key="frame" x="0.0" y="88" width="414" height="808"/>
                             </mapView>
                             <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1pD-Dk-gHI" userLabel="Flat Panel View">
-                                <rect key="frame" x="240" y="88" width="162" height="280"/>
+                                <rect key="frame" x="244" y="88" width="162" height="280"/>
                                 <subviews>
                                     <button clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="r6z-GH-iBC" userLabel="Settings Current Location Button">
                                         <rect key="frame" x="118" y="10" width="44" height="44"/>
@@ -38,6 +38,7 @@
                                             <constraint firstAttribute="width" secondItem="r6z-GH-iBC" secondAttribute="height" multiplier="1:1" id="bBv-d1-gIv"/>
                                         </constraints>
                                         <state key="normal" image="icon-current-location-default"/>
+                                        <state key="disabled" image="icon-current-location-disabled"/>
                                         <state key="highlighted" image="icon-current-location-highlighted"/>
                                         <connections>
                                             <action selector="settingsCurrentLocationButtonTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="5lL-bD-NzV"/>
@@ -51,6 +52,8 @@
                                             <constraint firstAttribute="width" constant="44" id="dZy-pE-nur"/>
                                         </constraints>
                                         <state key="normal" image="icon-settings-entering-geo-fence-default"/>
+                                        <state key="disabled" image="icon-settings-entering-geo-fence-disabled"/>
+                                        <state key="selected" image="icon-settings-entering-geo-fence-highlighted"/>
                                         <state key="highlighted" image="icon-settings-entering-geo-fence-highlighted"/>
                                         <connections>
                                             <action selector="settingsEnteringGeofenceButtonTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="6OE-6v-ahk"/>
@@ -64,6 +67,8 @@
                                             <constraint firstAttribute="width" secondItem="oN6-5H-pdp" secondAttribute="height" multiplier="1:1" id="eF7-gP-1Xx"/>
                                         </constraints>
                                         <state key="normal" image="icon-settings-wifi-default"/>
+                                        <state key="disabled" image="icon-settings-wifi-disabled"/>
+                                        <state key="selected" image="icon-settings-wifi-highlighted"/>
                                         <state key="highlighted" image="icon-settings-wifi-highlighted"/>
                                         <connections>
                                             <action selector="settingsWiFiButtonTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="o4a-kK-7nw"/>
@@ -80,6 +85,7 @@
                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <color key="titleShadowColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </state>
+                                        <state key="selected" image="icon-settings-radius-highlighted"/>
                                         <state key="highlighted" image="icon-settings-radius-highlighted"/>
                                         <connections>
                                             <action selector="settingsRadiusButtonTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Uog-ba-Cgh"/>
@@ -195,7 +201,7 @@
                             <constraint firstAttribute="bottom" secondItem="G9U-qO-zGb" secondAttribute="bottom" id="LeI-cd-lkz"/>
                             <constraint firstItem="G9U-qO-zGb" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="fKZ-dy-67M"/>
                             <constraint firstItem="ewL-C6-axe" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="prG-Hz-qag"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="1pD-Dk-gHI" secondAttribute="trailing" constant="12" id="uex-rK-dbB"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="1pD-Dk-gHI" secondAttribute="trailing" constant="8" id="uex-rK-dbB"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
@@ -212,6 +218,10 @@
                         <outlet property="flatPanelViewTopConstraint" destination="050-qO-u32" id="oCH-Ve-RM5"/>
                         <outlet property="mapView" destination="G9U-qO-zGb" id="J1X-zJ-Jda"/>
                         <outlet property="pickerTextField" destination="ewL-C6-axe" id="PMd-SQ-EQ3"/>
+                        <outlet property="settingsCurrentLocationButton" destination="r6z-GH-iBC" id="N9F-mG-JJ5"/>
+                        <outlet property="settingsGeofenceButton" destination="oxt-Zy-jni" id="fsQ-Qq-qbx"/>
+                        <outlet property="settingsRadiusButton" destination="6ll-FR-1B0" id="2z4-9U-PFL"/>
+                        <outlet property="settingsWiFiButton" destination="oN6-5H-pdp" id="EgG-Gp-GPH"/>
                         <outletCollection property="roundButtonsCollection" destination="oxt-Zy-jni" collectionClass="NSMutableArray" id="AVF-jV-g8g"/>
                         <outletCollection property="roundButtonsCollection" destination="oN6-5H-pdp" collectionClass="NSMutableArray" id="JMJ-3Q-Pxs"/>
                         <outletCollection property="roundButtonsCollection" destination="6ll-FR-1B0" collectionClass="NSMutableArray" id="wyr-G2-jqC"/>
@@ -246,20 +256,23 @@
         </scene>
     </scenes>
     <resources>
-        <image name="icon-current-location-default" width="30" height="30"/>
-        <image name="icon-current-location-highlighted" width="30" height="30"/>
+        <image name="icon-current-location-default" width="20" height="20"/>
+        <image name="icon-current-location-disabled" width="20" height="20"/>
+        <image name="icon-current-location-highlighted" width="20" height="20"/>
         <image name="icon-settings-cancel-default" width="20" height="20"/>
         <image name="icon-settings-cancel-highlighted" width="20" height="20"/>
-        <image name="icon-settings-default" width="30" height="30"/>
+        <image name="icon-settings-default" width="20" height="20"/>
         <image name="icon-settings-delete-default" width="20" height="20"/>
         <image name="icon-settings-delete-highlighted" width="20" height="20"/>
         <image name="icon-settings-entering-geo-fence-default" width="24" height="24"/>
+        <image name="icon-settings-entering-geo-fence-disabled" width="24" height="24"/>
         <image name="icon-settings-entering-geo-fence-highlighted" width="24" height="24"/>
         <image name="icon-settings-radius-default" width="24" height="24"/>
         <image name="icon-settings-radius-highlighted" width="24" height="24"/>
         <image name="icon-settings-ready-default" width="20" height="20"/>
         <image name="icon-settings-ready-highlighted" width="20" height="20"/>
         <image name="icon-settings-wifi-default" width="24" height="24"/>
+        <image name="icon-settings-wifi-disabled" width="24" height="24"/>
         <image name="icon-settings-wifi-highlighted" width="24" height="24"/>
     </resources>
 </document>

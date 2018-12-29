@@ -1,33 +1,28 @@
-En:
-The goal of this assignment is to create an iOS application that will detect if the device is located inside of a geofence area.
+1. Button 'Raduis':
+     - step 100m
+     - range 100...100_000
 
-Geofence area is defined as a combination of some geographic point, radius, and specific Wifi network name. A device is considered to be inside of the geofence area if the device is connected to the specified WiFi network or remains geographically inside the defined circle.
+2. Colors od settings icons in flat panel:
+    - black: default
+    - white: selected & highlighted
+    - red: disable
 
-Note that if device coordinates are reported outside of the zone, but the device still connected to the specific Wifi network, then the device is treated as being inside the geofence area.
+3. Reachability:
+    - work only on real device (iPhone)
+    - reacts to on/off connection state
+    - show alert view
 
-Application activity should provide controls to configure the geofence area and display current status: inside OR outside.
+4. Action buttons on flat panel:
+    - delete (hede panel) all stored properties
+    - cancel (hide panel) without modify stored properties
+    - ready (hide panel) with modify stored properties
 
-Once you have completed this task, host your source code on GitHub and a README file in the root with instructions. Keep in mind we prefer some commits history in the repo vs single commit. Tests are welcome and encouraged.
-
-When posting the code to Github, keep in mind we prefer some commits history in the repo vs single commit. Tests are welcomed and encouraged.
-
-Reply back to the email for this assignment with ONE LINK:
-Link to GitHub Repo (we prefer multiple commits vs a single commit)
+4.1. Radius button:
+      - open UIPickerView with numbers range 100...100_000
+      - auto select stored radius value
 
 
+5. Flat view:
+    - before show check network connection
+    - enable/disable settings buttons
 
-Ru:
-Цель этого задания - создать приложение для iOS, которое будет определять, находится ли устройство внутри области геозоны.
-
-Область геозоны определяется как комбинация некоторой географической точки, радиуса и определенного имени сети Wi-Fi. Устройство считается находящимся внутри области геозоны, если устройство подключено к указанной сети Wi-Fi или остается географически внутри определенного круга.
-
-Обратите внимание, что если координаты устройства сообщаются за пределами зоны, но устройство все еще подключено к определенной сети Wi-Fi, то устройство рассматривается как находящееся внутри области геозоны.
-
-Активность приложения должна предоставлять элементы управления для настройки области геозоны и отображения текущего состояния: внутри ИЛИ снаружи.
-
-После того, как вы выполнили эту задачу, разместите ваш исходный код на GitHub и файл README в корне с инструкциями. Имейте в виду, что мы предпочитаем историю некоторых коммитов в репо, а не в одном коммите. Тесты приветствуются и приветствуются.
-
-При публикации кода на Github, имейте в виду, что мы предпочитаем историю некоторых коммитов в репо, а не в одном коммите. Тесты приветствуются и поощряются.
-
-Ответьте на электронную почту для этого назначения с ДВУМЯ ССЫЛКАМИ:
-Ссылка на GitHub Repo (мы предпочитаем несколько коммитов против одного коммита)

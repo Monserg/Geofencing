@@ -8,4 +8,5 @@
 
 import Foundation
 
+let settingsWiFiKey         =   "SettingsWiFiValueKey"
 let settingsRadiusKey       =   "SettingsRadiusValueKey"
