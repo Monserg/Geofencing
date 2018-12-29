@@ -22,10 +22,10 @@
                                 <rect key="frame" x="0.0" y="88" width="414" height="808"/>
                             </mapView>
                             <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1pD-Dk-gHI" userLabel="Flat Panel View">
-                                <rect key="frame" x="258" y="88" width="144" height="216"/>
+                                <rect key="frame" x="240" y="88" width="162" height="280"/>
                                 <subviews>
                                     <button clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="r6z-GH-iBC" userLabel="Settings Current Location Button">
-                                        <rect key="frame" x="100" y="10" width="44" height="44"/>
+                                        <rect key="frame" x="118" y="10" width="44" height="44"/>
                                         <color key="backgroundColor" red="0.1843137255" green="0.49019607840000001" blue="0.98431372549999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="44" id="FF7-Hx-v8V"/>
@@ -38,7 +38,7 @@
                                         </connections>
                                     </button>
                                     <button clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oxt-Zy-jni" userLabel="Settings Entering Geofence Button">
-                                        <rect key="frame" x="100" y="64" width="44" height="44"/>
+                                        <rect key="frame" x="118" y="64" width="44" height="44"/>
                                         <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="oxt-Zy-jni" secondAttribute="height" multiplier="1:1" id="4Aq-eB-rxw"/>
@@ -51,7 +51,7 @@
                                         </connections>
                                     </button>
                                     <button clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oN6-5H-pdp" userLabel="Settings Wi-Fi Button">
-                                        <rect key="frame" x="100" y="118" width="44" height="44"/>
+                                        <rect key="frame" x="118" y="118" width="44" height="44"/>
                                         <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="44" id="4Z6-2i-THC"/>
@@ -64,7 +64,7 @@
                                         </connections>
                                     </button>
                                     <button clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6ll-FR-1B0" userLabel="Settings Radius Button">
-                                        <rect key="frame" x="100" y="172" width="44" height="44"/>
+                                        <rect key="frame" x="118" y="172" width="44" height="44"/>
                                         <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="44" id="1UB-ve-aTA"/>
@@ -79,29 +79,68 @@
                                             <action selector="settingsRadiusButtonTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Uog-ba-Cgh"/>
                                         </connections>
                                     </button>
+                                    <button clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HcQ-7l-RDE" userLabel="Settings Ready Button">
+                                        <rect key="frame" x="118" y="236" width="44" height="44"/>
+                                        <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="HcQ-7l-RDE" secondAttribute="height" multiplier="1:1" id="ObK-p0-Xdd"/>
+                                            <constraint firstAttribute="width" constant="44" id="mbl-bj-yIM"/>
+                                        </constraints>
+                                        <state key="normal" image="icon-settings-ready-default"/>
+                                        <state key="highlighted" image="icon-settings-ready-highlighted"/>
+                                        <connections>
+                                            <action selector="settingsReadyButtonTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="pmH-96-JRL"/>
+                                        </connections>
+                                    </button>
+                                    <button clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TfA-s6-zre" userLabel="Settings Cancel Button">
+                                        <rect key="frame" x="64" y="236" width="44" height="44"/>
+                                        <color key="backgroundColor" red="0.1843137255" green="0.49019607840000001" blue="0.98431372549999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="44" id="Bmk-eM-dFW"/>
+                                            <constraint firstAttribute="width" secondItem="TfA-s6-zre" secondAttribute="height" multiplier="1:1" id="CSc-oE-9FF"/>
+                                        </constraints>
+                                        <state key="normal" image="icon-settings-cancel-default"/>
+                                        <state key="highlighted" image="icon-settings-cancel-highlighted"/>
+                                        <connections>
+                                            <action selector="settingsCancelButtonTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="RkI-QZ-UNU"/>
+                                        </connections>
+                                    </button>
+                                    <button clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wd9-MV-7bK" userLabel="Settings Delete Button">
+                                        <rect key="frame" x="10" y="236" width="44" height="44"/>
+                                        <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="44" id="2t1-GM-B2Y"/>
+                                            <constraint firstAttribute="width" secondItem="wd9-MV-7bK" secondAttribute="height" multiplier="1:1" id="eIG-yR-NUg"/>
+                                        </constraints>
+                                        <state key="normal" image="icon-settings-delete-default"/>
+                                        <state key="highlighted" image="icon-settings-delete-highlighted"/>
+                                        <connections>
+                                            <action selector="settingsDeleteButtonTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="X6j-wx-OxN"/>
+                                        </connections>
+                                    </button>
                                     <label clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Location" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NbN-IR-CHp" userLabel="Settings Current Location Label">
-                                        <rect key="frame" x="8" y="21.5" width="80" height="21"/>
+                                        <rect key="frame" x="8" y="21.5" width="98" height="21"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <fontDescription key="fontDescription" type="system" weight="medium" pointSize="18"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Geofence" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="izz-O7-aod" userLabel="Settings Entering Geofence Label">
-                                        <rect key="frame" x="8" y="75.5" width="80" height="21"/>
+                                        <rect key="frame" x="8" y="75.5" width="98" height="21"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <fontDescription key="fontDescription" type="system" weight="medium" pointSize="18"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Wi-Fi" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h11-zl-iIH" userLabel="Settings Entering Wi-Fi Label">
-                                        <rect key="frame" x="8" y="129.5" width="80" height="21.5"/>
+                                        <rect key="frame" x="8" y="129.5" width="98" height="21.5"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <fontDescription key="fontDescription" type="system" weight="medium" pointSize="18"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Radius" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="but-yp-kWA" userLabel="Settings Radius Label">
-                                        <rect key="frame" x="8" y="183.5" width="80" height="21"/>
+                                        <rect key="frame" x="8" y="183.5" width="98" height="21"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <fontDescription key="fontDescription" type="system" weight="medium" pointSize="18"/>
                                         <nil key="textColor"/>
@@ -110,19 +149,24 @@
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="wd9-MV-7bK" secondAttribute="bottom" id="0JK-du-UOj"/>
                                     <constraint firstItem="r6z-GH-iBC" firstAttribute="centerY" secondItem="NbN-IR-CHp" secondAttribute="centerY" id="0KF-b5-1vg"/>
                                     <constraint firstItem="6ll-FR-1B0" firstAttribute="top" secondItem="oN6-5H-pdp" secondAttribute="bottom" constant="10" id="3fp-dc-3SC"/>
                                     <constraint firstItem="oxt-Zy-jni" firstAttribute="top" secondItem="r6z-GH-iBC" secondAttribute="bottom" constant="10" id="3vx-RU-jzX"/>
                                     <constraint firstItem="oN6-5H-pdp" firstAttribute="leading" secondItem="h11-zl-iIH" secondAttribute="trailing" constant="12" id="DgP-KT-IKg"/>
                                     <constraint firstItem="h11-zl-iIH" firstAttribute="leading" secondItem="1pD-Dk-gHI" secondAttribute="leading" constant="8" id="IoE-dA-kmN"/>
-                                    <constraint firstAttribute="bottom" secondItem="6ll-FR-1B0" secondAttribute="bottom" id="KUc-Bz-T6u"/>
+                                    <constraint firstAttribute="bottom" secondItem="TfA-s6-zre" secondAttribute="bottom" id="IvX-KJ-Bm0"/>
                                     <constraint firstItem="r6z-GH-iBC" firstAttribute="leading" secondItem="NbN-IR-CHp" secondAttribute="trailing" constant="12" id="Owq-fu-v16"/>
+                                    <constraint firstItem="HcQ-7l-RDE" firstAttribute="leading" secondItem="TfA-s6-zre" secondAttribute="trailing" constant="10" id="SYq-u9-1QA"/>
                                     <constraint firstAttribute="trailing" secondItem="r6z-GH-iBC" secondAttribute="trailing" id="Tqy-VH-rIt"/>
                                     <constraint firstItem="NbN-IR-CHp" firstAttribute="leading" secondItem="1pD-Dk-gHI" secondAttribute="leading" constant="8" id="UQo-FY-44R"/>
-                                    <constraint firstAttribute="width" constant="144" id="VCa-dS-gNc"/>
+                                    <constraint firstAttribute="width" constant="162" id="W9g-Ix-Pei"/>
                                     <constraint firstItem="oxt-Zy-jni" firstAttribute="leading" secondItem="izz-O7-aod" secondAttribute="trailing" constant="12" id="Ztg-fL-c6b"/>
-                                    <constraint firstAttribute="width" secondItem="1pD-Dk-gHI" secondAttribute="height" multiplier="144:216" id="dSt-eO-ndn"/>
+                                    <constraint firstAttribute="width" secondItem="1pD-Dk-gHI" secondAttribute="height" multiplier="162:280" id="dSt-eO-ndn"/>
                                     <constraint firstItem="oN6-5H-pdp" firstAttribute="top" secondItem="oxt-Zy-jni" secondAttribute="bottom" constant="10" id="fgy-NM-zgs"/>
+                                    <constraint firstItem="TfA-s6-zre" firstAttribute="leading" secondItem="wd9-MV-7bK" secondAttribute="trailing" constant="10" id="hbb-jw-cFV"/>
+                                    <constraint firstAttribute="bottom" secondItem="HcQ-7l-RDE" secondAttribute="bottom" id="hjV-Ak-LWH"/>
+                                    <constraint firstItem="HcQ-7l-RDE" firstAttribute="top" secondItem="6ll-FR-1B0" secondAttribute="bottom" constant="20" id="jMa-zr-RAd"/>
                                     <constraint firstItem="oN6-5H-pdp" firstAttribute="centerY" secondItem="h11-zl-iIH" secondAttribute="centerY" id="pIM-zG-Ykb"/>
                                     <constraint firstAttribute="trailing" secondItem="oxt-Zy-jni" secondAttribute="trailing" id="pc9-nD-ffk"/>
                                     <constraint firstAttribute="trailing" secondItem="oN6-5H-pdp" secondAttribute="trailing" id="rKu-ap-IE1"/>
@@ -131,6 +175,7 @@
                                     <constraint firstItem="but-yp-kWA" firstAttribute="leading" secondItem="1pD-Dk-gHI" secondAttribute="leading" constant="8" id="tMc-s7-BLB"/>
                                     <constraint firstItem="6ll-FR-1B0" firstAttribute="centerY" secondItem="but-yp-kWA" secondAttribute="centerY" id="vH1-fC-BPE"/>
                                     <constraint firstItem="izz-O7-aod" firstAttribute="leading" secondItem="1pD-Dk-gHI" secondAttribute="leading" constant="8" id="vri-0d-SBY"/>
+                                    <constraint firstAttribute="trailing" secondItem="HcQ-7l-RDE" secondAttribute="trailing" id="vsH-XS-kaK"/>
                                     <constraint firstAttribute="trailing" secondItem="6ll-FR-1B0" secondAttribute="trailing" id="vub-oE-M7C"/>
                                 </constraints>
                                 <userDefinedRuntimeAttributes>
@@ -171,6 +216,9 @@
                         <outletCollection property="roundButtonsCollection" destination="oN6-5H-pdp" collectionClass="NSMutableArray" id="JMJ-3Q-Pxs"/>
                         <outletCollection property="roundButtonsCollection" destination="6ll-FR-1B0" collectionClass="NSMutableArray" id="wyr-G2-jqC"/>
                         <outletCollection property="roundButtonsCollection" destination="r6z-GH-iBC" collectionClass="NSMutableArray" id="302-zc-vge"/>
+                        <outletCollection property="roundButtonsCollection" destination="HcQ-7l-RDE" collectionClass="NSMutableArray" id="wab-cj-w7L"/>
+                        <outletCollection property="roundButtonsCollection" destination="TfA-s6-zre" collectionClass="NSMutableArray" id="gvK-8a-nkj"/>
+                        <outletCollection property="roundButtonsCollection" destination="wd9-MV-7bK" collectionClass="NSMutableArray" id="uEV-Hc-zL0"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -200,11 +248,17 @@
     <resources>
         <image name="icon-current-location-default" width="30" height="30"/>
         <image name="icon-current-location-highlighted" width="30" height="30"/>
+        <image name="icon-settings-cancel-default" width="20" height="20"/>
+        <image name="icon-settings-cancel-highlighted" width="20" height="20"/>
         <image name="icon-settings-default" width="30" height="30"/>
+        <image name="icon-settings-delete-default" width="20" height="20"/>
+        <image name="icon-settings-delete-highlighted" width="20" height="20"/>
         <image name="icon-settings-entering-geo-fence-default" width="24" height="24"/>
         <image name="icon-settings-entering-geo-fence-highlighted" width="24" height="24"/>
         <image name="icon-settings-radius-default" width="24" height="24"/>
         <image name="icon-settings-radius-highlighted" width="24" height="24"/>
+        <image name="icon-settings-ready-default" width="20" height="20"/>
+        <image name="icon-settings-ready-highlighted" width="20" height="20"/>
         <image name="icon-settings-wifi-default" width="24" height="24"/>
         <image name="icon-settings-wifi-highlighted" width="24" height="24"/>
     </resources>

@@ -21,6 +21,9 @@ protocol MainShowDisplayLogic: class {
 
 class MainShowViewController: UIViewController {
     // MARK: - Properties
+    private let flatPanelShow: CGFloat = 0.0
+    private let flatPanelHide: CGFloat = -280.0
+    
     var interactor: MainShowBusinessLogic?
     var router: NSObjectProtocol?
     
@@ -50,7 +53,7 @@ class MainShowViewController: UIViewController {
     
     @IBOutlet weak var flatPanelViewTopConstraint: NSLayoutConstraint! {
         didSet {
-            self.flatPanelViewTopConstraint.constant = -216.0
+            self.flatPanelViewTopConstraint.constant = self.flatPanelHide
         }
     }
     
@@ -102,6 +105,15 @@ class MainShowViewController: UIViewController {
         interactor?.doSomething(withRequestModel: requestModel)
     }
     
+    private func flatPanel(hide: Bool) {
+        // Hide flat panel
+        self.flatPanelViewTopConstraint.constant = hide ? self.flatPanelHide : self.flatPanelShow
+
+        UIView.animate(withDuration: 0.3) {
+            self.view.layoutIfNeeded()
+        }
+    }
+    
     
     // MARK: - Actions
     @IBAction func currentLocationBarButtonItemTap(_ sender: UIBarButtonItem) {
@@ -111,11 +123,10 @@ class MainShowViewController: UIViewController {
     @IBAction func settingsBarButtonItemTap(_ sender: Any) {
         print("MainViewController: settings bar button item tapped...")
     
-        self.flatPanelViewTopConstraint.constant = self.flatPanelViewTopConstraint.constant == -216.0 ? 0.0 : -216.0
+        guard self.flatPanelViewTopConstraint.constant == self.flatPanelHide else { return }
         
-        UIView.animate(withDuration: 0.3) {
-            self.view.layoutIfNeeded()
-        }
+        // Show flat panel
+        self.flatPanel(hide: false)
     }
     
     // Settings buttons
@@ -137,6 +148,33 @@ class MainShowViewController: UIViewController {
     @IBAction func settingsRadiusButtonTap(_ sender: UIButton) {
         print("MainViewController: settings radius button tapped...")
 
+    }
+    
+    @IBAction func settingsReadyButtonTap(_ sender: UIButton) {
+        print("MainViewController: settings ready button tapped...")
+     
+        // Modify stored properties
+        
+        
+        // Hide flat panel
+        self.flatPanel(hide: true)
+    }
+
+    @IBAction func settingsCancelButtonTap(_ sender: UIButton) {
+        print("MainViewController: settings cancel button tapped...")
+        
+        // Hide flat panel without change stored properties
+        self.flatPanel(hide: true)
+    }
+
+    @IBAction func settingsDeleteButtonTap(_ sender: UIButton) {
+        print("MainViewController: settings delete button tapped...")
+        
+        // Clean all stored properties
+        
+        
+        // Hide flat panel
+        self.flatPanel(hide: true)
     }
 }
 
