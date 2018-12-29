@@ -226,7 +226,7 @@ class MainShowViewController: UIViewController {
     @IBAction func settingsWiFiButtonTap(_ sender: UIButton) {
         print("MainShowViewController: function: \(#function), line: \(#line)")
 
-        if let networkNames = self.getAllWiFiNames() {
+        if let networkNames = SSID.currentSSIDs() {
             print("MainShowViewController: function: \(#function), line: \(#line)")
 
             self.pickerViewDataSource = networkNames
@@ -288,7 +288,7 @@ class MainShowViewController: UIViewController {
         }
         
         self.settingsWiFiIndex = 0
-        self.settingsWiFiValue = ""
+        self.settingsWiFiValue = "XXX"
         
         self.settingsRadiusIndex = 0
         self.settingsRadiusValue = 0.0

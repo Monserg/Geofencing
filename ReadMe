@@ -2,15 +2,18 @@
      - step 100m
      - range 100...100_000
 
+
 2. Colors od settings icons in flat panel:
     - black: default
     - white: selected & highlighted
     - red: disable
 
+
 3. Reachability:
     - work only on real device (iPhone)
     - reacts to on/off connection state
     - show alert view
+
 
 4. Action buttons on flat panel:
     - delete (hede panel) all stored properties
@@ -20,6 +23,11 @@
 4.1. Radius button:
       - open UIPickerView with numbers range 100...100_000
       - auto select stored radius value
+
+4.2. Wi-Fi button:
+      - open UIPickerView with current Wi-Fi network name
+      - auto select stored radius value
+      - work only on real device (iPhone)
 
 
 5. Flat view:

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		A53EC06F00A36042AF2B12C8 /* Pods_Geofencing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FA71A783E63ADF95CF11F71 /* Pods_Geofencing.framework */; };
+		B1C895D421D7DDB80044530F /* SSID.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C895D321D7DDB80044530F /* SSID.swift */; };
 		B1ED1DA021D5C97A00249ACD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1ED1D9F21D5C97A00249ACD /* AppDelegate.swift */; };
 		B1ED1DA521D5C97A00249ACD /* MainShow.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B1ED1DA321D5C97A00249ACD /* MainShow.storyboard */; };
 		B1ED1DA721D5C97C00249ACD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B1ED1DA621D5C97C00249ACD /* Assets.xcassets */; };
@@ -20,12 +21,12 @@
 		B1ED1DD121D63FD200249ACD /* ReadMe in Resources */ = {isa = PBXBuildFile; fileRef = B1ED1DD021D63FD200249ACD /* ReadMe */; };
 		B1ED1DD821D7672000249ACD /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1ED1DD721D7672000249ACD /* Constants.swift */; };
 		B1ED1DFC21D79E8D00249ACD /* Description in Resources */ = {isa = PBXBuildFile; fileRef = B1ED1DFB21D79E8D00249ACD /* Description */; };
-		B1ED1DFF21D7A15800249ACD /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1ED1DFE21D7A15800249ACD /* ExternalAccessory.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		33F41CF85B60DF6D91871A52 /* Pods-Geofencing.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Geofencing.debug.xcconfig"; path = "Target Support Files/Pods-Geofencing/Pods-Geofencing.debug.xcconfig"; sourceTree = "<group>"; };
 		3FA71A783E63ADF95CF11F71 /* Pods_Geofencing.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Geofencing.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B1C895D321D7DDB80044530F /* SSID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SSID.swift; sourceTree = "<group>"; };
 		B1ED1D9C21D5C97A00249ACD /* Geofencing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Geofencing.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1ED1D9F21D5C97A00249ACD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B1ED1DA421D5C97A00249ACD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainShow.storyboard; sourceTree = "<group>"; };
@@ -40,7 +41,6 @@
 		B1ED1DD021D63FD200249ACD /* ReadMe */ = {isa = PBXFileReference; lastKnownFileType = text; path = ReadMe; sourceTree = "<group>"; };
 		B1ED1DD721D7672000249ACD /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		B1ED1DFB21D79E8D00249ACD /* Description */ = {isa = PBXFileReference; lastKnownFileType = text; path = Description; sourceTree = "<group>"; };
-		B1ED1DFE21D7A15800249ACD /* ExternalAccessory.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ExternalAccessory.framework; path = System/Library/Frameworks/ExternalAccessory.framework; sourceTree = SDKROOT; };
 		B1ED1E0021D7A15800249ACD /* Geofencing.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Geofencing.entitlements; sourceTree = "<group>"; };
 		C07F38F2D6BCFEB5F169BAAA /* Pods-Geofencing.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Geofencing.release.xcconfig"; path = "Target Support Files/Pods-Geofencing/Pods-Geofencing.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -50,7 +50,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B1ED1DFF21D7A15800249ACD /* ExternalAccessory.framework in Frameworks */,
 				A53EC06F00A36042AF2B12C8 /* Pods_Geofencing.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -142,6 +141,7 @@
 			isa = PBXGroup;
 			children = (
 				B1ED1DD721D7672000249ACD /* Constants.swift */,
+				B1C895D321D7DDB80044530F /* SSID.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -149,7 +149,6 @@
 		B1ED1DFD21D7A15800249ACD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				B1ED1DFE21D7A15800249ACD /* ExternalAccessory.framework */,
 				3FA71A783E63ADF95CF11F71 /* Pods_Geofencing.framework */,
 			);
 			name = Frameworks;
@@ -190,8 +189,11 @@
 					B1ED1D9B21D5C97A00249ACD = {
 						CreatedOnToolsVersion = 10.1;
 						SystemCapabilities = {
-							com.apple.WAC = {
+							com.apple.AccessWiFi = {
 								enabled = 1;
+							};
+							com.apple.WAC = {
+								enabled = 0;
 							};
 						};
 					};
@@ -282,6 +284,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B1C895D421D7DDB80044530F /* SSID.swift in Sources */,
 				B1ED1DC121D5D84500249ACD /* MainShowInteractor.swift in Sources */,
 				B1ED1DBD21D5D84500249ACD /* MainShowWorker.swift in Sources */,
 				B1ED1DBC21D5D84500249ACD /* MainShowPresenter.swift in Sources */,
@@ -437,13 +440,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Geofencing/Geofencing.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 2DS2B364WY;
+				DEVELOPMENT_TEAM = 29QBR47DMW;
 				INFOPLIST_FILE = "Geofencing/Resource Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.golos.Geofencing;
+				PRODUCT_BUNDLE_IDENTIFIER = "io.golos.Geofencing-swift";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -457,13 +460,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Geofencing/Geofencing.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 2DS2B364WY;
+				DEVELOPMENT_TEAM = 29QBR47DMW;
 				INFOPLIST_FILE = "Geofencing/Resource Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.golos.Geofencing;
+				PRODUCT_BUNDLE_IDENTIFIER = "io.golos.Geofencing-swift";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
