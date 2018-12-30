@@ -8,5 +8,11 @@
 
 import Foundation
 
+enum ActionType {
+    case none
+    case settings
+}
+
 let settingsWiFiKey         =   "SettingsWiFiValueKey"
 let settingsRadiusKey       =   "SettingsRadiusValueKey"
+let locationAuthStatusKey   =   "locationAuthorizationStatusKey"

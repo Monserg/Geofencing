@@ -26,6 +26,14 @@ class MainShowViewController: UIViewController {
     private let flatPanelShow: CGFloat = 0.0
     private let flatPanelHide: CGFloat = -280.0
     
+    private var isAlertViewShow: Bool = false {
+        didSet {
+            if oldValue == true && UserDefaults.standard.bool(forKey: locationAuthStatusKey) {
+                self.showAlertView(title: "Allow Location Access", message: "App 'Geofencing' needs access to your location. Turn On Location Services in your device Settings", actionType: .settings)
+            }
+        }
+    }
+    
     private let pickerView: UIPickerView = UIPickerView()
     private var pickerViewDataSource: [Any] = [String]()
     
@@ -52,6 +60,8 @@ class MainShowViewController: UIViewController {
     
     var reachability: Reachability!
 
+    private let locationManager = CLLocationManager()
+    
     var interactor: MainShowBusinessLogic?
     var router: NSObjectProtocol?
     
@@ -103,7 +113,7 @@ class MainShowViewController: UIViewController {
     }
 
     deinit {
-        print("MainShowViewController: function: \(#function), line: \(#line)")
+        print("MainShowViewController: function: \(#function), line: \(#line): run")
 
         NotificationCenter.default.removeObserver(self, name: .reachabilityChanged, object: reachability)
         self.reachability.stopNotifier()
@@ -131,14 +141,23 @@ class MainShowViewController: UIViewController {
         self.pickerTextField.inputAccessoryView = accessoryToolbar
     }
     
+    private func setupLocationManager() {
+        self.locationManager.delegate = self
+        self.locationManager.requestAlwaysAuthorization()
+        self.loadAllGeotifications()
+    }
 
+    
     // MARK: - Class Functions
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("MainShowViewController: function: \(#function), line: \(#line)")
+        print("MainShowViewController: function: \(#function), line: \(#line): run")
 
         self.setupUI()
         self.loadViewSettings()
+        
+        // LocationManager
+        self.setupLocationManager()
         
         // Reachability
         NotificationCenter.default.addObserver(self, selector: #selector(reachabilityChanged(note:)), name: .reachabilityChanged, object: reachability)
@@ -146,7 +165,7 @@ class MainShowViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        print("MainShowViewController: function: \(#function), line: \(#line)")
+        print("MainShowViewController: function: \(#function), line: \(#line): run")
 
         // Reachability
         self.reachability = Reachability.init()
@@ -174,6 +193,11 @@ class MainShowViewController: UIViewController {
         }
     }
     
+    private func delay(_ delay:Double, closure: @escaping ()->()) {
+        DispatchQueue.main.asyncAfter(
+            deadline: DispatchTime.now() + Double(Int64(delay * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: closure)
+    }
+    
     private func getAllWiFiNames() -> [String]? {
         var ssids: [String]? = [String]()
         
@@ -188,9 +212,29 @@ class MainShowViewController: UIViewController {
         return ssids
     }
     
-    private func showAlertView(withMessage message: String) {
+    private func showAlertView(title: String = "Info", message: String, actionType: ActionType = .none) {
+        self.isAlertViewShow = true
+
         let alert = UIAlertController(title: "Info", message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { _ in }))
+        
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { _ in
+            switch actionType {
+            case .settings:
+                guard let settingsUrl = URL(string: UIApplication.openSettingsURLString) else {
+                    return
+                }
+                
+                if UIApplication.shared.canOpenURL(settingsUrl) {
+                    UIApplication.shared.open(settingsUrl, completionHandler: { success in
+                        print("MainShowViewController: function: \(#function), line: \(#line): iOS Settings opened: \(success)")
+                    })
+                }
+
+            default:
+                self.isAlertViewShow = false
+                break
+            }
+        }))
         
         self.present(alert, animated: true, completion: nil)
         
@@ -202,7 +246,12 @@ class MainShowViewController: UIViewController {
     
     // MARK: - Actions
     @IBAction func settingsBarButtonItemTap(_ sender: Any) {
-        print("MainShowViewController: function: \(#function), line: \(#line)")
+        print("MainShowViewController: function: \(#function), line: \(#line): run")
+
+        guard !UserDefaults.standard.bool(forKey: locationAuthStatusKey) else {
+            self.isAlertViewShow = false
+            return
+        }
 
         guard self.flatPanelViewTopConstraint.constant == self.flatPanelHide else { return }
         
@@ -212,22 +261,22 @@ class MainShowViewController: UIViewController {
     
     // Settings buttons
     @IBAction func settingsCurrentLocationButtonTap(_ sender: UIButton) {
-        print("MainShowViewController: function: \(#function), line: \(#line)")
+        print("MainShowViewController: function: \(#function), line: \(#line): run")
 
 //        self.flatPanelView.isUserInteractionEnabled = false
     }
     
     @IBAction func settingsEnteringGeofenceButtonTap(_ sender: UIButton) {
-        print("MainShowViewController: function: \(#function), line: \(#line)")
+        print("MainShowViewController: function: \(#function), line: \(#line): run")
 
 //        self.flatPanelView.isUserInteractionEnabled = false
     }
     
     @IBAction func settingsWiFiButtonTap(_ sender: UIButton) {
-        print("MainShowViewController: function: \(#function), line: \(#line)")
+        print("MainShowViewController: function: \(#function), line: \(#line): run")
 
         if let networkNames = SSID.currentSSIDs() {
-            print("MainShowViewController: function: \(#function), line: \(#line)")
+            print("MainShowViewController: function: \(#function), line: \(#line): networkNames = \(networkNames)")
 
             self.pickerViewDataSource = networkNames
             self.pickerTextField.becomeFirstResponder()
@@ -249,7 +298,7 @@ class MainShowViewController: UIViewController {
     }
    
     @IBAction func settingsRadiusButtonTap(_ sender: UIButton) {
-        print("MainShowViewController: function: \(#function), line: \(#line)")
+        print("MainShowViewController: function: \(#function), line: \(#line): run")
 
         self.pickerViewDataSource = Array(1...1000).compactMap({ $0 * 100 })
         self.pickerTextField.becomeFirstResponder()
@@ -263,7 +312,7 @@ class MainShowViewController: UIViewController {
     }
     
     @IBAction func settingsReadyButtonTap(_ sender: UIButton) {
-        print("MainShowViewController: function: \(#function), line: \(#line)")
+        print("MainShowViewController: function: \(#function), line: \(#line): run")
 
         // Modify stored properties
         UserDefaults.standard.set(self.settingsRadiusValue, forKey: settingsRadiusKey)
@@ -273,14 +322,14 @@ class MainShowViewController: UIViewController {
     }
 
     @IBAction func settingsCancelButtonTap(_ sender: UIButton) {
-        print("MainShowViewController: function: \(#function), line: \(#line)")
+        print("MainShowViewController: function: \(#function), line: \(#line): run")
 
         // Hide flat panel without change stored properties
         self.flatPanel(hide: true)
     }
 
     @IBAction func settingsDeleteButtonTap(_ sender: UIButton) {
-        print("MainShowViewController: function: \(#function), line: \(#line)")
+        print("MainShowViewController: function: \(#function), line: \(#line): run")
 
         // Clean all stored properties
         UserDefaults.standard.dictionaryRepresentation().keys.forEach { key in
@@ -299,7 +348,7 @@ class MainShowViewController: UIViewController {
     
     // Picker view buttons
     @objc func onDoneButtonTapped(sender: UIBarButtonItem) {
-        print("MainShowViewController: function: \(#function), line: \(#line)")
+        print("MainShowViewController: function: \(#function), line: \(#line): run")
 
         if self.pickerTextField.isFirstResponder {
             self.pickerTextField.resignFirstResponder()
@@ -311,19 +360,19 @@ class MainShowViewController: UIViewController {
 
     // Notification
     @objc func reachabilityChanged(note: Notification) {
-        print("MainShowViewController: function: \(#function), line: \(#line)")
+        print("MainShowViewController: function: \(#function), line: \(#line): run")
 
         let reachability = note.object as! Reachability
         
         switch reachability.connection {
         case .wifi:
-            self.showAlertView(withMessage: "Reachable via Wi-Fi")
+            self.showAlertView(message: "Reachable via Wi-Fi")
         
         case .cellular:
-            self.showAlertView(withMessage: "Reachable via Cellular")
+            self.showAlertView(message: "Reachable via Cellular")
 
         case .none:
-            self.showAlertView(withMessage: "Network not reachable")
+            self.showAlertView(message: "Network not reachable")
         }
     }
 }
@@ -341,7 +390,7 @@ extension MainShowViewController: MainShowDisplayLogic {
 // MARK: - MKMapViewDelegate
 extension MainShowViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        print("MainShowViewController: function: \(#function), line: \(#line)")
+        print("MainShowViewController: function: \(#function), line: \(#line): run")
 
 //        let identifier = "myGeotification"
 //        if annotation is Geotification {
@@ -364,7 +413,7 @@ extension MainShowViewController: MKMapViewDelegate {
     
     
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-        print("MainShowViewController: function: \(#function), line: \(#line)")
+        print("MainShowViewController: function: \(#function), line: \(#line): run")
 
         if overlay is MKCircle {
             let circleRenderer = MKCircleRenderer(overlay: overlay)
@@ -379,7 +428,7 @@ extension MainShowViewController: MKMapViewDelegate {
     }
     
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
-        print("MainShowViewController: function: \(#function), line: \(#line)")
+        print("MainShowViewController: function: \(#function), line: \(#line): run")
 
         // Delete geotification
 //        let geotification = view.annotation as! Geotification
@@ -416,7 +465,7 @@ extension MainShowViewController: UIPickerViewDelegate {
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        print("MainShowViewController: function: \(#function), line: \(#line)")
+        print("MainShowViewController: function: \(#function), line: \(#line): run")
 
         // Modify stored properties
         if let valueInt = self.pickerViewDataSource[row] as? Int {
@@ -427,6 +476,32 @@ extension MainShowViewController: UIPickerViewDelegate {
         else if let valueString = self.pickerViewDataSource[row] as? String {
             self.settingsWiFiIndex = row
             self.settingsWiFiValue = valueString
+        }
+    }
+}
+
+
+// MARK: - CLLocationManagerDelegate
+extension MainShowViewController: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        self.mapView.showsUserLocation = (status == .authorizedAlways)
+        UserDefaults.standard.set(status == .denied, forKey: locationAuthStatusKey)
+    }
+    
+    private func loadAllGeotifications() {
+//        geotifications.removeAll()
+//        let allGeotifications = Geotification.allGeotifications()
+//        allGeotifications.forEach { add($0) }
+    }
+    
+    func saveAllGeotifications() {
+        let encoder = JSONEncoder()
+        
+        do {
+//            let data = try encoder.encode(geotifications)
+//            UserDefaults.standard.set(data, forKey: PreferencesKeys.savedItems)
+        } catch {
+            print("MainShowViewController: function: \(#function), line: \(#line): error encoding geotifications")
         }
     }
 }
