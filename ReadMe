@@ -29,11 +29,19 @@
       - auto select stored radius value
       - work only on real device (iPhone)
 
+4.3. Geofence button:
+      - enter manual geofence
+      - check empty value
+      - Cancel & Ok actions
+
 
 5. Flat view:
     - before show check network connection
     - enable/disable settings buttons
 
+
 6. Location Manager:
     - if status 'dinied' offer user open Settings
     - before show flat panel view App check location authorization status
+
+

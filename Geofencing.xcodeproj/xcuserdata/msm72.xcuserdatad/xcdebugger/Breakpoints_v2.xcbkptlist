@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Geofencing/Scenes/MainShow/MainShowViewController.swift"
-            timestampString = "567881505.775165"
+            timestampString = "567892080.646571"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "292"
-            endingLineNumber = "292"
+            startingLineNumber = "338"
+            endingLineNumber = "338"
             landmarkName = "settingsWiFiButtonTap(_:)"
             landmarkType = "7">
          </BreakpointContent>

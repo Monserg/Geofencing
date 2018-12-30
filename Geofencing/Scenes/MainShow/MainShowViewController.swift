@@ -61,7 +61,8 @@ class MainShowViewController: UIViewController {
     var reachability: Reachability!
 
     private let locationManager = CLLocationManager()
-    
+    private var geotifications: [Geotification]?
+
     var interactor: MainShowBusinessLogic?
     var router: NSObjectProtocol?
     
@@ -144,6 +145,9 @@ class MainShowViewController: UIViewController {
     private func setupLocationManager() {
         self.locationManager.delegate = self
         self.locationManager.requestAlwaysAuthorization()
+        self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
+
+        self.locationManager.startUpdatingLocation()
         self.loadAllGeotifications()
     }
 
@@ -230,6 +234,9 @@ class MainShowViewController: UIViewController {
                     })
                 }
 
+            case .geofence:
+                self.settingsEnteringGeofenceButtonTap(self.settingsGeofenceButton)
+                
             default:
                 self.isAlertViewShow = false
                 break
@@ -241,6 +248,34 @@ class MainShowViewController: UIViewController {
         self.settingsWiFiButton.isEnabled = self.reachability.connection == .wifi
         self.settingsGeofenceButton.isEnabled = self.reachability.connection == .wifi
         self.settingsCurrentLocationButton.isEnabled = self.reachability.connection == .wifi
+    }
+    
+    private func configurationHandler(textField: UITextField!) {
+        if textField != nil {
+            self.pickerTextField = textField!
+            self.pickerTextField.placeholder = "Enter location as city, street"
+        }
+    }
+    
+    private func showAlertViewWithTextField() {
+        let alert = UIAlertController(title: "Info", message: "Enter Manual Location", preferredStyle: .alert)
+        alert.addTextField(configurationHandler: configurationHandler)
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
+            self.flatPanelView.isUserInteractionEnabled = true
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { _ in
+            if let text = alert.textFields?.first?.text, text.isEmpty {
+                self.showAlertView(title: "Info", message: "Enter geofence", actionType: .geofence)
+            }
+            
+            else {
+                self.flatPanelView.isUserInteractionEnabled = true
+            }
+        }))
+        
+        self.present(alert, animated: true, completion: nil)
     }
     
     
@@ -263,13 +298,25 @@ class MainShowViewController: UIViewController {
     @IBAction func settingsCurrentLocationButtonTap(_ sender: UIButton) {
         print("MainShowViewController: function: \(#function), line: \(#line): run")
 
-//        self.flatPanelView.isUserInteractionEnabled = false
+        // Set pin to current user location
+        if  let geotifications = self.geotifications,
+            let geotification = geotifications.first(where: { $0.identifier == currentUserLocationKey }) {
+            let center = CLLocationCoordinate2D(latitude: geotification.coordinate.latitude, longitude: geotification.coordinate.longitude)
+            let region = MKCoordinateRegion(center: center, span: MKCoordinateSpan(latitudeDelta: latitudeDelta, longitudeDelta: longitudeDelta))
+            
+            self.mapView.setRegion(region, animated: true)
+            
+            let pointAnnotation = MKPointAnnotation()
+            pointAnnotation.coordinate = geotification.coordinate
+            self.mapView.addAnnotation(pointAnnotation)
+        }
     }
     
     @IBAction func settingsEnteringGeofenceButtonTap(_ sender: UIButton) {
         print("MainShowViewController: function: \(#function), line: \(#line): run")
 
-//        self.flatPanelView.isUserInteractionEnabled = false
+        self.showAlertViewWithTextField()
+        self.flatPanelView.isUserInteractionEnabled = false
     }
     
     @IBAction func settingsWiFiButtonTap(_ sender: UIButton) {
@@ -392,25 +439,29 @@ extension MainShowViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         print("MainShowViewController: function: \(#function), line: \(#line): run")
 
-//        let identifier = "myGeotification"
+        let identifier = currentUserLocationKey
+        
 //        if annotation is Geotification {
-//            var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKPinAnnotationView
-//            if annotationView == nil {
-//                annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
-//                annotationView?.canShowCallout = true
-//                let removeButton = UIButton(type: .custom)
-//                removeButton.frame = CGRect(x: 0, y: 0, width: 23, height: 23)
-//                removeButton.setImage(UIImage(named: "DeleteGeotification")!, for: .normal)
-//                annotationView?.leftCalloutAccessoryView = removeButton
-//            } else {
-//                annotationView?.annotation = annotation
-//            }
-//            return annotationView
-//        }
+            var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKPinAnnotationView
 
-        return nil
+            if annotationView == nil {
+                annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+                annotationView?.canShowCallout = true
+                let removeButton = UIButton(type: .custom)
+                removeButton.frame = CGRect(x: 0, y: 0, width: 23, height: 23)
+                removeButton.setImage(UIImage(named: "icon-geotification-delete")!, for: .normal)
+                annotationView?.leftCalloutAccessoryView = removeButton
+            }
+            
+            else {
+                annotationView?.annotation = annotation
+            }
+           
+            return annotationView
+//        }
+        
+//        return nil
     }
-    
     
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         print("MainShowViewController: function: \(#function), line: \(#line): run")
@@ -488,8 +539,27 @@ extension MainShowViewController: CLLocationManagerDelegate {
         UserDefaults.standard.set(status == .denied, forKey: locationAuthStatusKey)
     }
     
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.last {
+            let center = CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+            let region = MKCoordinateRegion(center: center, span: MKCoordinateSpan(latitudeDelta: latitudeDelta, longitudeDelta: longitudeDelta))
+            
+            self.mapView.setRegion(region, animated: true)
+            
+            if  let geotifications = self.geotifications,
+                let geotification = geotifications.first(where: { $0.identifier == currentUserLocationKey }),
+                let index = geotifications.firstIndex(of: geotification) {
+                self.geotifications![index] = Geotification(coordinate: location.coordinate, radius: 100, identifier: currentUserLocationKey, note: nil)
+            }
+            
+            else if self.geotifications == nil {
+                self.geotifications = [Geotification(coordinate: location.coordinate, radius: 100, identifier: currentUserLocationKey, note: nil)]
+            }
+        }
+    }
+    
     private func loadAllGeotifications() {
-//        geotifications.removeAll()
+//        self.geotifications.removeAll()
 //        let allGeotifications = Geotification.allGeotifications()
 //        allGeotifications.forEach { add($0) }
     }
@@ -497,11 +567,44 @@ extension MainShowViewController: CLLocationManagerDelegate {
     func saveAllGeotifications() {
         let encoder = JSONEncoder()
         
-        do {
-//            let data = try encoder.encode(geotifications)
-//            UserDefaults.standard.set(data, forKey: PreferencesKeys.savedItems)
-        } catch {
-            print("MainShowViewController: function: \(#function), line: \(#line): error encoding geotifications")
+//        do {
+//            let data = try encoder.encode(self.geotifications)
+//            UserDefaults.standard.set(data, forKey: geotificationsDataKey)
+//        } catch {
+//            print("MainShowViewController: function: \(#function), line: \(#line): error encoding geotifications")
+//        }
+    }
+    
+    func region(with geotification: Geotification) -> CLCircularRegion {
+        let region = CLCircularRegion(center:       geotification.coordinate,
+                                      radius:       geotification.radius,
+                                      identifier:   geotification.identifier)
+
+        region.notifyOnEntry = true
+        region.notifyOnExit = true
+     
+        return region
+    }
+    
+    func startMonitoring(geotification: Geotification) {
+        if !CLLocationManager.isMonitoringAvailable(for: CLCircularRegion.self) {
+            self.showAlertView(title: "Error", message: "Geofencing is not supported on this device!")
+            return
+        }
+        
+        if CLLocationManager.authorizationStatus() != .authorizedAlways {
+            self.showAlertView(title: "Warning", message: "Your geotification is saved but will only be activated once you grant Geofencing permission to access the device location")
+        }
+        
+        let fenceRegion = region(with: geotification)
+        self.locationManager.startMonitoring(for: fenceRegion)
+    }
+    
+    func stopMonitoring(geotification: Geotification) {
+        for region in locationManager.monitoredRegions {
+            guard let circularRegion = region as? CLCircularRegion, circularRegion.identifier == geotification.identifier else { continue }
+            
+            self.locationManager.stopMonitoring(for: circularRegion)
         }
     }
 }

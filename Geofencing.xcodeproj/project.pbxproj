@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		A53EC06F00A36042AF2B12C8 /* Pods_Geofencing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FA71A783E63ADF95CF11F71 /* Pods_Geofencing.framework */; };
+		B119561721D937E900146C0B /* Geotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = B119561621D937E900146C0B /* Geotification.swift */; };
 		B1C895D421D7DDB80044530F /* SSID.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C895D321D7DDB80044530F /* SSID.swift */; };
 		B1ED1DA021D5C97A00249ACD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1ED1D9F21D5C97A00249ACD /* AppDelegate.swift */; };
 		B1ED1DA521D5C97A00249ACD /* MainShow.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B1ED1DA321D5C97A00249ACD /* MainShow.storyboard */; };
@@ -26,6 +27,7 @@
 /* Begin PBXFileReference section */
 		33F41CF85B60DF6D91871A52 /* Pods-Geofencing.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Geofencing.debug.xcconfig"; path = "Target Support Files/Pods-Geofencing/Pods-Geofencing.debug.xcconfig"; sourceTree = "<group>"; };
 		3FA71A783E63ADF95CF11F71 /* Pods_Geofencing.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Geofencing.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B119561621D937E900146C0B /* Geotification.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Geotification.swift; sourceTree = "<group>"; };
 		B1C895D321D7DDB80044530F /* SSID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SSID.swift; sourceTree = "<group>"; };
 		B1ED1D9C21D5C97A00249ACD /* Geofencing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Geofencing.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1ED1D9F21D5C97A00249ACD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -141,6 +143,7 @@
 			isa = PBXGroup;
 			children = (
 				B1ED1DD721D7672000249ACD /* Constants.swift */,
+				B119561621D937E900146C0B /* Geotification.swift */,
 				B1C895D321D7DDB80044530F /* SSID.swift */,
 			);
 			path = Common;
@@ -284,6 +287,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B119561721D937E900146C0B /* Geotification.swift in Sources */,
 				B1C895D421D7DDB80044530F /* SSID.swift in Sources */,
 				B1ED1DC121D5D84500249ACD /* MainShowInteractor.swift in Sources */,
 				B1ED1DBD21D5D84500249ACD /* MainShowWorker.swift in Sources */,
