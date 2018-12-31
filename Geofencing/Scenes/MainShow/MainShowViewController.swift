@@ -14,6 +14,7 @@ import UIKit
 import MapKit
 import CoreLocation
 import Reachability
+import UserNotifications
 import SystemConfiguration.CaptiveNetwork
 
 // MARK: - Input & Output protocols
@@ -54,7 +55,11 @@ class MainShowViewController: UIViewController {
     private var annotationView: MKAnnotationView!
     private var pointAnnotation: MKPointAnnotation!
     private let locationManager = CLLocationManager()
-
+    private var geofenceRegion: CLCircularRegion!
+    private var geofenceRegionCircleOverlay: MKCircle!
+    private var notificationCenter: UNUserNotificationCenter!
+    private var currentWiFiNetworkName: String!
+    
     
     // MARK: - IBOutlets
     @IBOutlet weak var flatPanelView: UIView!
@@ -144,9 +149,19 @@ class MainShowViewController: UIViewController {
         self.setupUI()
         self.setupMapView()
         
+
         // LocationManager
         self.setupLocationManager()
         
+        self.notificationCenter = UNUserNotificationCenter.current()
+        self.notificationCenter.delegate = self
+        
+        self.notificationCenter.requestAuthorization(options: [.alert, .sound]) { (granted, error) in
+            if !granted {
+                print("Permission not granted")
+            }
+        }
+
         // Reachability
         NotificationCenter.default.addObserver(self, selector: #selector(reachabilityChanged(note:)), name: .reachabilityChanged, object: reachability)
     }
@@ -160,6 +175,10 @@ class MainShowViewController: UIViewController {
         
         do {
             try self.reachability.startNotifier()
+            
+            if self.reachability.connection == .wifi, let networkName = SSID.currentSSIDs()?.first {
+                self.currentWiFiNetworkName = networkName
+            }
         } catch {
             print("MainViewController: unable to start notifier")
         }
@@ -282,7 +301,8 @@ class MainShowViewController: UIViewController {
                                                 span:    MKCoordinateSpan(latitudeDelta: latitudeDelta / 10, longitudeDelta: longitudeDelta / 10))
         
         self.mapView.setRegion(locationRegion, animated: true)
-
+        self.addGeofenceRegion(center: location.coordinate)
+        
         // Add new point annotation
         guard self.model.settingsPointAnnotationLocationLatitude != nil, self.model.settingsPointAnnotationLocationLongitude != nil else {
                 self.pointAnnotation = MKPointAnnotation()
@@ -308,6 +328,34 @@ class MainShowViewController: UIViewController {
         self.model.settingsPointAnnotationLocationLatitude = location.coordinate.latitude
         self.model.settingsPointAnnotationLocationLongitude = location.coordinate.longitude
         UserDefaults.standard.set(MainShowModel.archive(model: self.model), forKey: settingsKey)
+    }
+    
+    private func addGeofenceRegion(center: CLLocationCoordinate2D) {
+        let geofenceRegionCenter = CLLocationCoordinate2D(latitude: center.latitude, longitude: center.longitude)
+        
+        self.geofenceRegion = CLCircularRegion(center: geofenceRegionCenter, radius: CLLocationDistance(self.model?.settingsRadiusValue ?? 100.0), identifier: geofenceRegionKey)
+        self.geofenceRegion.notifyOnExit = true
+        self.geofenceRegion.notifyOnEntry = true
+        
+        self.geofenceRegionCircleOverlay = MKCircle(center: geofenceRegionCenter, radius: CLLocationDistance(self.model?.settingsRadiusValue ?? 100.0))
+        self.mapView.removeOverlays(self.mapView.overlays)
+        self.mapView.addOverlay(self.geofenceRegionCircleOverlay)
+        
+        self.locationManager.startMonitoring(for: geofenceRegion)
+    }
+    
+    private func checkSettings() -> Bool {
+        if self.model.settingsWiFiValue == "XXX" {
+            self.showAlertView(message: "Select Wi-Fi network name")
+            return false
+        }
+        
+        else if self.model.settingsPointAnnotationLocationLatitude == nil || self.model.settingsPointAnnotationLocationLongitude == nil {
+            self.showAlertView(message: "Add point annotation")
+            return false
+        }
+        
+        return true
     }
     
     
@@ -341,6 +389,10 @@ class MainShowViewController: UIViewController {
 
         self.showAlertViewWithTextField()
         self.flatPanelView.isUserInteractionEnabled = false
+    }
+    
+    @IBAction func directWiFiButtonTap(_ sender: UIButton) {
+        self.model.settingsWiFiValue = "Ukraine"
     }
     
     @IBAction func settingsWiFiButtonTap(_ sender: UIButton) {
@@ -385,8 +437,24 @@ class MainShowViewController: UIViewController {
     @IBAction func settingsReadyButtonTap(_ sender: UIButton) {
         print("MainShowViewController: function: \(#function), line: \(#line): run")
 
+        guard self.checkSettings() else {
+            return
+        }
+        
         // Modify stored properties
         UserDefaults.standard.set(MainShowModel.archive(model: self.model), forKey: settingsKey)
+        
+        var locationCoordinate2D: CLLocationCoordinate2D!
+        
+        if let pointAnnotationLocationLatitude = self.model.settingsPointAnnotationLocationLatitude, let pointAnnotationLocationLongitude = self.model.settingsPointAnnotationLocationLongitude {
+            locationCoordinate2D = CLLocationCoordinate2D(latitude: pointAnnotationLocationLatitude, longitude: pointAnnotationLocationLongitude)
+        }
+        
+        else if let geofenceLocationLatitude = self.model.settingsGeofenceLocationLatitude, let geofenceLocationLongitude = self.model.settingsGeofenceLocationLongitude {
+            locationCoordinate2D = CLLocationCoordinate2D(latitude: geofenceLocationLatitude, longitude: geofenceLocationLongitude)
+        }
+        
+        self.addGeofenceRegion(center: locationCoordinate2D)
         
         // Hide flat panel
         self.flatPanel(hide: true)
@@ -410,6 +478,9 @@ class MainShowViewController: UIViewController {
         
         // Hide flat panel
         self.flatPanel(hide: true)
+        
+        self.locationManager.stopMonitoring(for: self.geofenceRegion)
+        self.geofenceRegion = nil
         
         self.locationManager.stopUpdatingLocation()
         self.locationManager.startUpdatingLocation()
@@ -490,11 +561,11 @@ extension MainShowViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         print("MainShowViewController: function: \(#function), line: \(#line): run")
 
-        if overlay is MKCircle {
-            let circleRenderer = MKCircleRenderer(overlay: overlay)
+        if let regionCircleOverlay = overlay as? MKCircle {
+            let circleRenderer = MKCircleRenderer(overlay: regionCircleOverlay)
             circleRenderer.lineWidth = 1.0
-            circleRenderer.strokeColor = .purple
-            circleRenderer.fillColor = UIColor.purple.withAlphaComponent(0.4)
+            circleRenderer.strokeColor = .gray
+            circleRenderer.fillColor = UIColor.gray.withAlphaComponent(0.4)
             
             return circleRenderer
         }
@@ -506,6 +577,9 @@ extension MainShowViewController: MKMapViewDelegate {
         switch newState {
         case .ending, .canceling:
             view.dragState = .none
+            let coordinate = self.mapView.convert(view.center, toCoordinateFrom: self.mapView)
+            
+            self.addPointAnnotation(location: CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude))
         
         default:
             break
@@ -589,5 +663,60 @@ extension MainShowViewController: CLLocationManagerDelegate {
         CLGeocoder().geocodeAddressString(address) { placemarks, error in
             completion(placemarks?.first?.location?.coordinate, error)
         }
+    }
+    
+    // Mpnitoring geofence region
+    func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
+        print("MainShowViewController: function: \(#function), line: \(#line): run")
+
+        if region is CLCircularRegion && self.currentWiFiNetworkName != self.model.settingsWiFiValue {
+            self.handleEvent(enter: false, region: region)
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
+        print("MainShowViewController: function: \(#function), line: \(#line): run")
+
+        if region is CLCircularRegion {
+            self.handleEvent(enter: true, region: region)
+        }
+    }
+    
+    func handleEvent(enter: Bool, region: CLRegion!) {
+        let content = UNMutableNotificationContent()
+        content.title = enter ? "Welcome!" : "Goodbye!"
+        content.body = enter ? "You come into the geofence \(region.identifier)" : "You leave the geofence \(region.identifier)"
+        content.sound = UNNotificationSound.default
+        
+        let timeInSeconds: TimeInterval = 5 // 5sec
+        
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeInSeconds, repeats: false)
+        let identifier = region.identifier
+        
+        let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
+        
+        notificationCenter.add(request, withCompletionHandler: { (error) in
+            if error != nil {
+                print("Error adding notification with identifier: \(identifier)")
+            }
+        })
+    }
+}
+
+
+// MARK: - UNUserNotificationCenterDelegate
+extension MainShowViewController: UNUserNotificationCenterDelegate {
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        // when app is onpen and in foregroud
+        completionHandler(.alert)
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        // get the notification identifier to respond accordingly
+        let identifier = response.notification.request.identifier
+        
+        // do what you need to do
+        print(identifier)
+        // ...
     }
 }

@@ -31,7 +31,7 @@ struct MainShowModel: Codable {
     
     var settingsPointAnnotationLocationLatitude: Double?
     var settingsPointAnnotationLocationLongitude: Double?
-
+    
     
     // MARK: - Structure Functions
     static func loadAllStoredProperties() -> MainShowModel {

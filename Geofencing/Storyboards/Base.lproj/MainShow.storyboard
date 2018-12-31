@@ -191,6 +191,19 @@
                                     <constraint firstAttribute="trailing" secondItem="6ll-FR-1B0" secondAttribute="trailing" id="vub-oE-M7C"/>
                                 </constraints>
                             </view>
+                            <button clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Uhu-Ks-hUA" userLabel="Direct W-Fi Button">
+                                <rect key="frame" x="362" y="778" width="44" height="44"/>
+                                <color key="backgroundColor" red="1" green="0.57637232540000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="44" id="4SJ-Fr-vtX"/>
+                                    <constraint firstAttribute="height" constant="44" id="E9c-BW-OPx"/>
+                                </constraints>
+                                <state key="normal" image="icon-settings-direct-wifi-default"/>
+                                <state key="highlighted" image="icon-settings-direct-wifi-highlighted"/>
+                                <connections>
+                                    <action selector="directWiFiButtonTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="yWI-WR-AHs"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -199,6 +212,8 @@
                             <constraint firstItem="G9U-qO-zGb" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="HDL-yc-Zx0"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="G9U-qO-zGb" secondAttribute="trailing" id="LVF-g1-5kB"/>
                             <constraint firstAttribute="bottom" secondItem="G9U-qO-zGb" secondAttribute="bottom" id="LeI-cd-lkz"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Uhu-Ks-hUA" secondAttribute="trailing" constant="8" id="alu-mq-GyX"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Uhu-Ks-hUA" secondAttribute="bottom" constant="40" id="e0O-uj-YFG"/>
                             <constraint firstItem="G9U-qO-zGb" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="fKZ-dy-67M"/>
                             <constraint firstItem="ewL-C6-axe" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="prG-Hz-qag"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="1pD-Dk-gHI" secondAttribute="trailing" constant="8" id="uex-rK-dbB"/>
@@ -229,6 +244,7 @@
                         <outletCollection property="roundButtonsCollection" destination="HcQ-7l-RDE" collectionClass="NSMutableArray" id="wab-cj-w7L"/>
                         <outletCollection property="roundButtonsCollection" destination="TfA-s6-zre" collectionClass="NSMutableArray" id="gvK-8a-nkj"/>
                         <outletCollection property="roundButtonsCollection" destination="wd9-MV-7bK" collectionClass="NSMutableArray" id="uEV-Hc-zL0"/>
+                        <outletCollection property="roundButtonsCollection" destination="Uhu-Ks-hUA" collectionClass="NSMutableArray" id="17C-Q5-HYU"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -264,6 +280,8 @@
         <image name="icon-settings-default" width="20" height="20"/>
         <image name="icon-settings-delete-default" width="20" height="20"/>
         <image name="icon-settings-delete-highlighted" width="20" height="20"/>
+        <image name="icon-settings-direct-wifi-default" width="24" height="24"/>
+        <image name="icon-settings-direct-wifi-highlighted" width="24" height="24"/>
         <image name="icon-settings-entering-geo-fence-default" width="24" height="24"/>
         <image name="icon-settings-entering-geo-fence-disabled" width="24" height="24"/>
         <image name="icon-settings-entering-geo-fence-highlighted" width="24" height="24"/>

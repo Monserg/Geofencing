@@ -15,12 +15,9 @@ enum ActionType {
 }
 
 let settingsKey                 =   "SettingsKey"
+let geofenceRegionKey           =   "Test"
 let locationAuthStatusKey       =   "LocationAuthorizationStatusKey"
 let currentUserLocationKey      =   "CurrentUserLocationKey"
-
-//let settingsWiFiKey             =   "SettingsWiFiValueKey"
-//let settingsRadiusKey           =   "SettingsRadiusValueKey"
-//let geotificationsDataKey       =   "GeotificationsDataKey"
 
 
 let latitudeDelta   =   20.0
