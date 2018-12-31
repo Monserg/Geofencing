@@ -41,7 +41,12 @@
 
 
 6. Location Manager:
-    - if status 'dinied' offer user open Settings
+    - if status 'denied' offer user open Settings
     - before show flat panel view App check location authorization status
+    - convert entered location name (city, country) to geo coordinate
 
+
+7. Point Annotation:
+    - change location between current location & geofence
+    - move after tapped on map view
 

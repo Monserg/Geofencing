@@ -17,10 +17,6 @@ import Reachability
 import SystemConfiguration.CaptiveNetwork
 
 // MARK: - Input & Output protocols
-protocol MainShowDisplayLogic: class {
-    func displaySomething(fromViewModel viewModel: MainShowModels.Something.ViewModel)
-}
-
 class MainShowViewController: UIViewController {
     // MARK: - Properties
     private let flatPanelShow: CGFloat = 0.0
@@ -37,12 +33,6 @@ class MainShowViewController: UIViewController {
     private let pickerView: UIPickerView = UIPickerView()
     private var pickerViewDataSource: [Any] = [String]()
     
-    private var settingsRadiusIndex: Int = 0
-    private var settingsRadiusValue: Float = UserDefaults.standard.float(forKey: settingsRadiusKey)
-
-    private var settingsWiFiIndex: Int = 0
-    private var settingsWiFiValue: String = UserDefaults.standard.string(forKey: settingsWiFiKey) ?? "XXX"
-
     private var accessoryToolbar: UIToolbar {
         get {
             let toolbarFrame = CGRect(x: 0.0, y: 0.0, width: view.frame.width, height: 44.0)
@@ -61,10 +51,7 @@ class MainShowViewController: UIViewController {
     var reachability: Reachability!
 
     private let locationManager = CLLocationManager()
-    private var geotifications: [Geotification]?
-
-    var interactor: MainShowBusinessLogic?
-    var router: NSObjectProtocol?
+    private var model = MainShowModel()
     
     
     // MARK: - IBOutlets
@@ -80,6 +67,11 @@ class MainShowViewController: UIViewController {
     @IBOutlet weak var mapView: MKMapView! {
         didSet {
             self.mapView.delegate = self
+            self.mapView.userTrackingMode = .follow
+            
+            let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(mapViewTapped(sender:)))
+//            gestureRecognizer.delegate = self
+            self.mapView.addGestureRecognizer(gestureRecognizer)
         }
     }
     
@@ -101,18 +93,6 @@ class MainShowViewController: UIViewController {
     
     
     // MARK: - Class Initialization
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        
-        setup()
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        
-        setup()
-    }
-
     deinit {
         print("MainShowViewController: function: \(#function), line: \(#line): run")
 
@@ -122,17 +102,6 @@ class MainShowViewController: UIViewController {
     
     
     // MARK: - Setup
-    private func setup() {
-        let viewController          =   self
-        let interactor              =   MainShowInteractor()
-        let presenter               =   MainShowPresenter()
-        
-        viewController.interactor   =   interactor
-        viewController.router       =   router
-        interactor.presenter        =   presenter
-        presenter.viewController    =   viewController
-    }
-    
     private func setupUI() {
         self.pickerView.delegate = self
         self.pickerView.dataSource = self
@@ -148,7 +117,6 @@ class MainShowViewController: UIViewController {
         self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
 
         self.locationManager.startUpdatingLocation()
-        self.loadAllGeotifications()
     }
 
     
@@ -158,7 +126,6 @@ class MainShowViewController: UIViewController {
         print("MainShowViewController: function: \(#function), line: \(#line): run")
 
         self.setupUI()
-        self.loadViewSettings()
         
         // LocationManager
         self.setupLocationManager()
@@ -183,11 +150,6 @@ class MainShowViewController: UIViewController {
     
     
     // MARK: - Custom Functions
-    private func loadViewSettings() {
-        let requestModel = MainShowModels.Something.RequestModel()
-        interactor?.doSomething(withRequestModel: requestModel)
-    }
-    
     private func flatPanel(hide: Bool) {
         // Hide flat panel
         self.flatPanelViewTopConstraint.constant = hide ? self.flatPanelHide : self.flatPanelShow
@@ -250,16 +212,10 @@ class MainShowViewController: UIViewController {
         self.settingsCurrentLocationButton.isEnabled = self.reachability.connection == .wifi
     }
     
-    private func configurationHandler(textField: UITextField!) {
-        if textField != nil {
-            self.pickerTextField = textField!
-            self.pickerTextField.placeholder = "Enter location as city, street"
-        }
-    }
-    
     private func showAlertViewWithTextField() {
         let alert = UIAlertController(title: "Info", message: "Enter Manual Location", preferredStyle: .alert)
         alert.addTextField(configurationHandler: configurationHandler)
+        alert.textFields?.first?.autocapitalizationType = .sentences
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
             self.flatPanelView.isUserInteractionEnabled = true
@@ -271,11 +227,61 @@ class MainShowViewController: UIViewController {
             }
             
             else {
+                self.getCoordinateFrom(address: alert.textFields!.first!.text!) { [weak self] coordinate, error in
+                    guard let strongSelf = self else { return }
+                    
+                    guard error == nil else {
+                        strongSelf.showAlertView(title: "Error", message: error!.localizedDescription)
+                        return
+                    }
+                    
+                    DispatchQueue.main.async {
+                        print("MainShowViewController: function: \(#function), line: \(#line): settingsGeofence = \(coordinate!)")
+                        strongSelf.model.settingsGeofence = coordinate
+                        
+                        strongSelf.addPointAnnotation(location: CLLocation.init(latitude: coordinate!.latitude, longitude: coordinate!.longitude))
+                    }
+                }
+                
                 self.flatPanelView.isUserInteractionEnabled = true
             }
         }))
         
         self.present(alert, animated: true, completion: nil)
+    }
+    
+    private func configurationHandler(textField: UITextField!) {
+        if textField != nil {
+            self.pickerTextField = textField!
+            self.pickerTextField.placeholder = "Enter location as city, street"
+        }
+    }
+    
+    private func addPointAnnotation(location: CLLocation) {
+        // Center map view
+        let locationCenter = location
+        let locationRegion = MKCoordinateRegion(center:  locationCenter.coordinate,
+                                                span:    MKCoordinateSpan(latitudeDelta: latitudeDelta, longitudeDelta: longitudeDelta))
+        
+        self.mapView.setRegion(locationRegion, animated: true)
+
+        // Add new point annotation
+        guard let settingsPointAnnotation = self.model.settingsPointAnnotation else {
+            let locationPointAnnotation = MKPointAnnotation()
+            locationPointAnnotation.coordinate = location.coordinate
+            locationPointAnnotation.title = "User current location"
+            self.mapView.addAnnotation(locationPointAnnotation)
+            
+            self.model.settingsPointAnnotation = locationPointAnnotation
+
+            return
+        }
+        
+        // Move created point annotation
+        settingsPointAnnotation.title = "Geofence location"
+        UIView.animate(withDuration: 0.5, animations: {
+            settingsPointAnnotation.coordinate = CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+        })
     }
     
     
@@ -298,17 +304,9 @@ class MainShowViewController: UIViewController {
     @IBAction func settingsCurrentLocationButtonTap(_ sender: UIButton) {
         print("MainShowViewController: function: \(#function), line: \(#line): run")
 
-        // Set pin to current user location
-        if  let geotifications = self.geotifications,
-            let geotification = geotifications.first(where: { $0.identifier == currentUserLocationKey }) {
-            let center = CLLocationCoordinate2D(latitude: geotification.coordinate.latitude, longitude: geotification.coordinate.longitude)
-            let region = MKCoordinateRegion(center: center, span: MKCoordinateSpan(latitudeDelta: latitudeDelta, longitudeDelta: longitudeDelta))
-            
-            self.mapView.setRegion(region, animated: true)
-            
-            let pointAnnotation = MKPointAnnotation()
-            pointAnnotation.coordinate = geotification.coordinate
-            self.mapView.addAnnotation(pointAnnotation)
+        // Set point annotation to current user location
+        if let userCurrentLocation = self.model.settingsUserCurrentLocation {
+            self.addPointAnnotation(location: userCurrentLocation)
         }
     }
     
@@ -328,17 +326,17 @@ class MainShowViewController: UIViewController {
             self.pickerViewDataSource = networkNames
             self.pickerTextField.becomeFirstResponder()
             
-            if self.settingsWiFiValue == "XXX" {
-                self.settingsWiFiIndex = 0
-                self.settingsWiFiValue = networkNames[0]
-                UserDefaults.standard.set(self.settingsWiFiValue, forKey: settingsWiFiKey)
+            if self.model.settingsWiFiValue == "XXX" {
+                self.model.settingsWiFiIndex = 0
+                self.model.settingsWiFiValue = networkNames[0]
+                UserDefaults.standard.set(self.model.settingsWiFiValue, forKey: settingsWiFiKey)
             }
             
             else {
-                self.settingsWiFiIndex = (self.pickerViewDataSource as! [String]).firstIndex(of: self.settingsWiFiValue) ?? 0
+                self.model.settingsWiFiIndex = (self.pickerViewDataSource as! [String]).firstIndex(of: self.model.settingsWiFiValue) ?? 0
             }
             
-            self.pickerView.selectRow(self.settingsWiFiIndex, inComponent: 0, animated: true)
+            self.pickerView.selectRow(self.model.settingsWiFiIndex, inComponent: 0, animated: true)
             self.flatPanelView.isUserInteractionEnabled = false
             sender.isSelected = true
         }
@@ -350,10 +348,10 @@ class MainShowViewController: UIViewController {
         self.pickerViewDataSource = Array(1...1000).compactMap({ $0 * 100 })
         self.pickerTextField.becomeFirstResponder()
         
-        self.settingsRadiusValue = UserDefaults.standard.float(forKey: settingsRadiusKey)
-        self.settingsRadiusIndex = (self.pickerViewDataSource as! [Int]).firstIndex(of: Int(self.settingsRadiusValue)) ?? 0
+        self.model.settingsRadiusValue = UserDefaults.standard.float(forKey: settingsRadiusKey)
+        self.model.settingsRadiusIndex = (self.pickerViewDataSource as! [Int]).firstIndex(of: Int(self.model.settingsRadiusValue)) ?? 0
         
-        self.pickerView.selectRow(self.settingsRadiusIndex, inComponent: 0, animated: true)
+        self.pickerView.selectRow(self.model.settingsRadiusIndex, inComponent: 0, animated: true)
         self.flatPanelView.isUserInteractionEnabled = false
         sender.isSelected = true
     }
@@ -362,7 +360,7 @@ class MainShowViewController: UIViewController {
         print("MainShowViewController: function: \(#function), line: \(#line): run")
 
         // Modify stored properties
-        UserDefaults.standard.set(self.settingsRadiusValue, forKey: settingsRadiusKey)
+        UserDefaults.standard.set(self.model.settingsRadiusValue, forKey: settingsRadiusKey)
         
         // Hide flat panel
         self.flatPanel(hide: true)
@@ -379,15 +377,7 @@ class MainShowViewController: UIViewController {
         print("MainShowViewController: function: \(#function), line: \(#line): run")
 
         // Clean all stored properties
-        UserDefaults.standard.dictionaryRepresentation().keys.forEach { key in
-            UserDefaults.standard.removeObject(forKey: key)
-        }
-        
-        self.settingsWiFiIndex = 0
-        self.settingsWiFiValue = "XXX"
-        
-        self.settingsRadiusIndex = 0
-        self.settingsRadiusValue = 0.0
+        self.model.clearAllProperties()
         
         // Hide flat panel
         self.flatPanel(hide: true)
@@ -422,20 +412,20 @@ class MainShowViewController: UIViewController {
             self.showAlertView(message: "Network not reachable")
         }
     }
-}
-
-
-// MARK: - MainShowDisplayLogic
-extension MainShowViewController: MainShowDisplayLogic {
-    func displaySomething(fromViewModel viewModel: MainShowModels.Something.ViewModel) {
-        // NOTE: Display the result from the Presenter
-
+    
+    // Map view
+    @objc func mapViewTapped(sender: UILongPressGestureRecognizer) {
+        let location = sender.location(in: self.mapView)
+        let coordinate = self.mapView.convert(location, toCoordinateFrom: self.mapView)
+        
+        self.addPointAnnotation(location: CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude))
     }
 }
 
 
 // MARK: - MKMapViewDelegate
 extension MainShowViewController: MKMapViewDelegate {
+    
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         print("MainShowViewController: function: \(#function), line: \(#line): run")
 
@@ -520,13 +510,13 @@ extension MainShowViewController: UIPickerViewDelegate {
 
         // Modify stored properties
         if let valueInt = self.pickerViewDataSource[row] as? Int {
-            self.settingsRadiusIndex = row
-            self.settingsRadiusValue = Float(valueInt)
+            self.model.settingsRadiusIndex = row
+            self.model.settingsRadiusValue = Float(valueInt)
         }
         
         else if let valueString = self.pickerViewDataSource[row] as? String {
-            self.settingsWiFiIndex = row
-            self.settingsWiFiValue = valueString
+            self.model.settingsWiFiIndex = row
+            self.model.settingsWiFiValue = valueString
         }
     }
 }
@@ -546,33 +536,15 @@ extension MainShowViewController: CLLocationManagerDelegate {
             
             self.mapView.setRegion(region, animated: true)
             
-            if  let geotifications = self.geotifications,
-                let geotification = geotifications.first(where: { $0.identifier == currentUserLocationKey }),
-                let index = geotifications.firstIndex(of: geotification) {
-                self.geotifications![index] = Geotification(coordinate: location.coordinate, radius: 100, identifier: currentUserLocationKey, note: nil)
-            }
-            
-            else if self.geotifications == nil {
-                self.geotifications = [Geotification(coordinate: location.coordinate, radius: 100, identifier: currentUserLocationKey, note: nil)]
-            }
+            // Set current user location
+            self.model.settingsUserCurrentLocation = location
         }
     }
     
-    private func loadAllGeotifications() {
-//        self.geotifications.removeAll()
-//        let allGeotifications = Geotification.allGeotifications()
-//        allGeotifications.forEach { add($0) }
-    }
-    
-    func saveAllGeotifications() {
-        let encoder = JSONEncoder()
-        
-//        do {
-//            let data = try encoder.encode(self.geotifications)
-//            UserDefaults.standard.set(data, forKey: geotificationsDataKey)
-//        } catch {
-//            print("MainShowViewController: function: \(#function), line: \(#line): error encoding geotifications")
-//        }
+    func getCoordinateFrom(address: String, completion: @escaping(_ coordinate: CLLocationCoordinate2D?, _ error: Error?) -> ()) {
+        CLGeocoder().geocodeAddressString(address) { placemarks, error in
+            completion(placemarks?.first?.location?.coordinate, error)
+        }
     }
     
     func region(with geotification: Geotification) -> CLCircularRegion {
