@@ -15,21 +15,33 @@ import MapKit
 import CoreLocation
 
 // MARK: - Data models
-struct MainShowModel {
+struct MainShowModel: Codable {
     // MARK: - Properties
     var settingsRadiusIndex: Int = 0
-    var settingsRadiusValue: Float = UserDefaults.standard.float(forKey: settingsRadiusKey)
+    var settingsRadiusValue: Float = 100.0
     
-    var settingsUserCurrentLocation: CLLocation?
-    var settingsGeofence: CLLocationCoordinate2D?
+    var settingsUserCurrentLocationLatitude: Double?
+    var settingsUserCurrentLocationLongitude: Double?
+    
+    var settingsGeofenceLocationLatitude: Double?
+    var settingsGeofenceLocationLongitude: Double?
 
     var settingsWiFiIndex: Int = 0
-    var settingsWiFiValue: String = UserDefaults.standard.string(forKey: settingsWiFiKey) ?? "XXX"    
+    var settingsWiFiValue: String = "XXX"
     
-    var settingsPointAnnotation: MKPointAnnotation?
-    
+    var settingsPointAnnotationLocationLatitude: Double?
+    var settingsPointAnnotationLocationLongitude: Double?
+
     
     // MARK: - Structure Functions
+    static func loadAllStoredProperties() -> MainShowModel {
+        if let data = UserDefaults.standard.data(forKey: settingsKey) {
+            return MainShowModel.unarchive(data: data)
+        }
+        
+        return MainShowModel()
+    }
+    
     mutating func clearAllProperties() {
         UserDefaults.standard.dictionaryRepresentation().keys.forEach { key in
             UserDefaults.standard.removeObject(forKey: key)
@@ -40,5 +52,32 @@ struct MainShowModel {
         
         self.settingsRadiusIndex = 0
         self.settingsRadiusValue = 0.0
+        
+        self.settingsGeofenceLocationLatitude = nil
+        self.settingsGeofenceLocationLongitude = nil
+        self.settingsUserCurrentLocationLatitude = nil
+        self.settingsUserCurrentLocationLongitude = nil
+        self.settingsPointAnnotationLocationLatitude = nil
+        self.settingsPointAnnotationLocationLongitude = nil
+    }
+    
+    static func archive(model: MainShowModel) -> Data {
+        var modelArchive = model
+        
+        return Data(bytes: &modelArchive, count: MemoryLayout<MainShowModel>.stride)
+    }
+    
+    static func unarchive(data: Data) -> MainShowModel {
+        guard data.count == MemoryLayout<MainShowModel>.stride else {
+            fatalError("BOOM!")
+        }
+        
+        var model: MainShowModel?
+        
+        data.withUnsafeBytes({( bytes: UnsafePointer<MainShowModel>) -> Void in
+            model = UnsafePointer<MainShowModel>(bytes).pointee
+        })
+        
+        return model!
     }
 }

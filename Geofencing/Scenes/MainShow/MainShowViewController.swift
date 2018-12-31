@@ -50,10 +50,11 @@ class MainShowViewController: UIViewController {
     
     var reachability: Reachability!
 
+    private var model: MainShowModel!
     private var annotationView: MKAnnotationView!
+    private var pointAnnotation: MKPointAnnotation!
     private let locationManager = CLLocationManager()
-    private var model = MainShowModel()
-    
+
     
     // MARK: - IBOutlets
     @IBOutlet weak var flatPanelView: UIView!
@@ -111,21 +112,37 @@ class MainShowViewController: UIViewController {
         self.pickerTextField.inputAccessoryView = accessoryToolbar
     }
     
+    private func setupMapView() {
+        self.model = MainShowModel.loadAllStoredProperties()
+        
+        if  let pointAnnotationLocationLatitude = self.model.settingsPointAnnotationLocationLatitude,
+            let pointAnnotationLocationLongitude = self.model.settingsPointAnnotationLocationLongitude {
+            self.model.settingsPointAnnotationLocationLatitude = nil
+            self.model.settingsPointAnnotationLocationLongitude = nil
+            self.addPointAnnotation(location: CLLocation(latitude: pointAnnotationLocationLatitude, longitude: pointAnnotationLocationLongitude))
+        }
+
+        else if let currentUserLocationLatitude = self.model.settingsUserCurrentLocationLatitude, let currentUserLocationLongitude = self.model.settingsUserCurrentLocationLongitude {
+            self.addPointAnnotation(location: CLLocation(latitude: currentUserLocationLatitude, longitude: currentUserLocationLongitude))
+        }
+    }
+
     private func setupLocationManager() {
         self.locationManager.delegate = self
         self.locationManager.requestAlwaysAuthorization()
         self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
-
+        
         self.locationManager.startUpdatingLocation()
     }
-
     
+
     // MARK: - Class Functions
     override func viewDidLoad() {
         super.viewDidLoad()
         print("MainShowViewController: function: \(#function), line: \(#line): run")
-
+        
         self.setupUI()
+        self.setupMapView()
         
         // LocationManager
         self.setupLocationManager()
@@ -237,8 +254,9 @@ class MainShowViewController: UIViewController {
                     
                     DispatchQueue.main.async {
                         print("MainShowViewController: function: \(#function), line: \(#line): settingsGeofence = \(coordinate!)")
-                        strongSelf.model.settingsGeofence = coordinate
-                        
+                        strongSelf.model.settingsGeofenceLocationLatitude = coordinate!.latitude
+                        strongSelf.model.settingsGeofenceLocationLongitude = coordinate!.longitude
+
                         strongSelf.addPointAnnotation(location: CLLocation.init(latitude: coordinate!.latitude, longitude: coordinate!.longitude))
                     }
                 }
@@ -261,34 +279,35 @@ class MainShowViewController: UIViewController {
         // Center map view
         let locationCenter = location
         let locationRegion = MKCoordinateRegion(center:  locationCenter.coordinate,
-                                                span:    MKCoordinateSpan(latitudeDelta: latitudeDelta, longitudeDelta: longitudeDelta))
+                                                span:    MKCoordinateSpan(latitudeDelta: latitudeDelta / 10, longitudeDelta: longitudeDelta / 10))
         
         self.mapView.setRegion(locationRegion, animated: true)
 
         // Add new point annotation
-        guard let settingsPointAnnotation = self.model.settingsPointAnnotation else {
-            let locationPointAnnotation = MKPointAnnotation()
-            locationPointAnnotation.coordinate = location.coordinate
-            locationPointAnnotation.title = "User current location"
-            
-//            let gestureRecognizerLongTap = UILongPressGestureRecognizer(target: self, action: #selector(pointAnnotationLongTapped(sender:)))
-//            gestureRecognizerLongTap.minimumPressDuration = 2
-//            locationPointAnnotation. addGestureRecognizer(gestureRecognizerLongTap)
-
-            self.mapView.addAnnotation(locationPointAnnotation)
-            
-            self.model.settingsPointAnnotation = locationPointAnnotation
-
-            return
+        guard self.model.settingsPointAnnotationLocationLatitude != nil, self.model.settingsPointAnnotationLocationLongitude != nil else {
+                self.pointAnnotation = MKPointAnnotation()
+                self.pointAnnotation.coordinate = location.coordinate
+                self.pointAnnotation.title = "User current location"
+                
+                self.mapView.addAnnotation(self.pointAnnotation)
+                
+                self.model.settingsPointAnnotationLocationLatitude = self.pointAnnotation.coordinate.latitude
+                self.model.settingsPointAnnotationLocationLongitude = self.pointAnnotation.coordinate.longitude
+                
+                return
         }
         
         // Move created point annotation
-        settingsPointAnnotation.title = "Geofence location"
+        self.pointAnnotation.title = "Geofence location"
         
         UIView.animate(withDuration: 0.5, animations: {
-            self.mapView.deselectAnnotation(settingsPointAnnotation, animated: true)
-            settingsPointAnnotation.coordinate = CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+            self.mapView.deselectAnnotation(self.pointAnnotation, animated: true)
+            self.pointAnnotation.coordinate = CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
         })
+        
+        self.model.settingsPointAnnotationLocationLatitude = location.coordinate.latitude
+        self.model.settingsPointAnnotationLocationLongitude = location.coordinate.longitude
+        UserDefaults.standard.set(MainShowModel.archive(model: self.model), forKey: settingsKey)
     }
     
     
@@ -312,8 +331,8 @@ class MainShowViewController: UIViewController {
         print("MainShowViewController: function: \(#function), line: \(#line): run")
 
         // Set point annotation to current user location
-        if let userCurrentLocation = self.model.settingsUserCurrentLocation {
-            self.addPointAnnotation(location: userCurrentLocation)
+        if let userCurrentLocationLatitude = self.model.settingsUserCurrentLocationLatitude, let userCurrentLocationLongitude = self.model.settingsUserCurrentLocationLongitude {
+            self.addPointAnnotation(location: CLLocation.init(latitude: userCurrentLocationLatitude, longitude: userCurrentLocationLongitude))
         }
     }
     
@@ -336,7 +355,7 @@ class MainShowViewController: UIViewController {
             if self.model.settingsWiFiValue == "XXX" {
                 self.model.settingsWiFiIndex = 0
                 self.model.settingsWiFiValue = networkNames[0]
-                UserDefaults.standard.set(self.model.settingsWiFiValue, forKey: settingsWiFiKey)
+                UserDefaults.standard.set(MainShowModel.archive(model: self.model), forKey: settingsKey)
             }
             
             else {
@@ -355,19 +374,19 @@ class MainShowViewController: UIViewController {
         self.pickerViewDataSource = Array(1...1000).compactMap({ $0 * 100 })
         self.pickerTextField.becomeFirstResponder()
         
-        self.model.settingsRadiusValue = UserDefaults.standard.float(forKey: settingsRadiusKey)
-        self.model.settingsRadiusIndex = (self.pickerViewDataSource as! [Int]).firstIndex(of: Int(self.model.settingsRadiusValue)) ?? 0
-        
-        self.pickerView.selectRow(self.model.settingsRadiusIndex, inComponent: 0, animated: true)
-        self.flatPanelView.isUserInteractionEnabled = false
-        sender.isSelected = true
+        if let data = UserDefaults.standard.data(forKey: settingsKey) {
+            let storedModel = MainShowModel.unarchive(data: data)
+            self.pickerView.selectRow((self.pickerViewDataSource as! [Int]).firstIndex(of: Int(storedModel.settingsRadiusValue)) ?? 0, inComponent: 0, animated: true)
+            self.flatPanelView.isUserInteractionEnabled = false
+            sender.isSelected = true
+        }
     }
     
     @IBAction func settingsReadyButtonTap(_ sender: UIButton) {
         print("MainShowViewController: function: \(#function), line: \(#line): run")
 
         // Modify stored properties
-        UserDefaults.standard.set(self.model.settingsRadiusValue, forKey: settingsRadiusKey)
+        UserDefaults.standard.set(MainShowModel.archive(model: self.model), forKey: settingsKey)
         
         // Hide flat panel
         self.flatPanel(hide: true)
@@ -383,11 +402,17 @@ class MainShowViewController: UIViewController {
     @IBAction func settingsDeleteButtonTap(_ sender: UIButton) {
         print("MainShowViewController: function: \(#function), line: \(#line): run")
 
+        // Clean map view
+        self.mapView.removeAnnotations(self.mapView.annotations)
+        
         // Clean all stored properties
         self.model.clearAllProperties()
         
         // Hide flat panel
         self.flatPanel(hide: true)
+        
+        self.locationManager.stopUpdatingLocation()
+        self.locationManager.startUpdatingLocation()
     }
     
     // Picker view buttons
@@ -460,28 +485,6 @@ extension MainShowViewController: MKMapViewDelegate {
         self.annotationView.image = UIImage(named: "icon-location-pin")
         
         return self.annotationView
-
-        
-////        if annotation is Geotification {
-//            var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKPinAnnotationView
-//
-//            if annotationView == nil {
-//                annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
-////                annotationView?.canShowCallout = true
-//                let removeButton = UIButton(type: .custom)
-//                removeButton.frame = CGRect(x: 0, y: 0, width: 23, height: 23)
-//                removeButton.setImage(UIImage(named: "icon-geotification-delete")!, for: .normal)
-//                annotationView?.leftCalloutAccessoryView = removeButton
-//            }
-//
-//            else {
-//                annotationView?.annotation = annotation
-//            }
-//
-//            return annotationView
-//        }
-        
-//        return nil
     }
     
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
@@ -513,9 +516,6 @@ extension MainShowViewController: MKMapViewDelegate {
         print("MainShowViewController: function: \(#function), line: \(#line): run")
 
         // Delete geotification
-//        let geotification = view.annotation as! Geotification
-//        remove(geotification)
-//        saveAllGeotifications()
     }
 }
 
@@ -572,52 +572,22 @@ extension MainShowViewController: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.last {
-            let center = CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
-            let region = MKCoordinateRegion(center: center, span: MKCoordinateSpan(latitudeDelta: latitudeDelta, longitudeDelta: longitudeDelta))
-            
-            self.mapView.setRegion(region, animated: true)
+            if self.model.settingsPointAnnotationLocationLatitude == nil, self.model.settingsPointAnnotationLocationLongitude == nil  {
+                let center = CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+                let region = MKCoordinateRegion(center: center, span: MKCoordinateSpan(latitudeDelta: latitudeDelta, longitudeDelta: longitudeDelta))
+                
+                self.mapView.setRegion(region, animated: true)
+            }
             
             // Set current user location
-            self.model.settingsUserCurrentLocation = location
+            self.model.settingsUserCurrentLocationLatitude = location.coordinate.latitude
+            self.model.settingsUserCurrentLocationLongitude = location.coordinate.longitude
         }
     }
     
     func getCoordinateFrom(address: String, completion: @escaping(_ coordinate: CLLocationCoordinate2D?, _ error: Error?) -> ()) {
         CLGeocoder().geocodeAddressString(address) { placemarks, error in
             completion(placemarks?.first?.location?.coordinate, error)
-        }
-    }
-    
-    func region(with geotification: Geotification) -> CLCircularRegion {
-        let region = CLCircularRegion(center:       geotification.coordinate,
-                                      radius:       geotification.radius,
-                                      identifier:   geotification.identifier)
-
-        region.notifyOnEntry = true
-        region.notifyOnExit = true
-     
-        return region
-    }
-    
-    func startMonitoring(geotification: Geotification) {
-        if !CLLocationManager.isMonitoringAvailable(for: CLCircularRegion.self) {
-            self.showAlertView(title: "Error", message: "Geofencing is not supported on this device!")
-            return
-        }
-        
-        if CLLocationManager.authorizationStatus() != .authorizedAlways {
-            self.showAlertView(title: "Warning", message: "Your geotification is saved but will only be activated once you grant Geofencing permission to access the device location")
-        }
-        
-        let fenceRegion = region(with: geotification)
-        self.locationManager.startMonitoring(for: fenceRegion)
-    }
-    
-    func stopMonitoring(geotification: Geotification) {
-        for region in locationManager.monitoredRegions {
-            guard let circularRegion = region as? CLCircularRegion, circularRegion.identifier == geotification.identifier else { continue }
-            
-            self.locationManager.stopMonitoring(for: circularRegion)
         }
     }
 }

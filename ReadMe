@@ -50,4 +50,4 @@
     - change location between current location & geofence
     - move after tapped on map view
     - pin support 'drag & drop' functionality
-
+    - show point annotation after start App from stored settings

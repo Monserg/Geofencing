@@ -14,11 +14,13 @@ enum ActionType {
     case geofence
 }
 
-let settingsWiFiKey             =   "SettingsWiFiValueKey"
-let settingsRadiusKey           =   "SettingsRadiusValueKey"
+let settingsKey                 =   "SettingsKey"
 let locationAuthStatusKey       =   "LocationAuthorizationStatusKey"
-let geotificationsDataKey       =   "GeotificationsDataKey"
-let currentUserLocationKey      =   "currentUserLocationKey"
+let currentUserLocationKey      =   "CurrentUserLocationKey"
+
+//let settingsWiFiKey             =   "SettingsWiFiValueKey"
+//let settingsRadiusKey           =   "SettingsRadiusValueKey"
+//let geotificationsDataKey       =   "GeotificationsDataKey"
 
 
 let latitudeDelta   =   20.0
