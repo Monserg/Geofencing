@@ -6,32 +6,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Geofencing/Scenes/MainShow/MainShowViewController.swift"
-            timestampString = "567925493.279235"
+            timestampString = "567935552.2246571"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "437"
-            endingLineNumber = "437"
-            landmarkName = "mapView(_:viewFor:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Geofencing/Scenes/MainShow/MainShowViewController.swift"
-            timestampString = "567925493.2796839"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "447"
-            endingLineNumber = "447"
-            landmarkName = "mapView(_:viewFor:)"
+            startingLineNumber = "235"
+            endingLineNumber = "235"
+            landmarkName = "showAlertViewWithTextField()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -42,12 +26,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Geofencing/Scenes/MainShow/MainShowViewController.swift"
-            timestampString = "567925493.280341"
+            timestampString = "567935552.2252311"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "235"
-            endingLineNumber = "235"
-            landmarkName = "showAlertViewWithTextField()"
+            startingLineNumber = "432"
+            endingLineNumber = "432"
+            landmarkName = "pointAnnotationLongTapped(sender:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

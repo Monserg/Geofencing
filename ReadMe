@@ -49,4 +49,5 @@
 7. Point Annotation:
     - change location between current location & geofence
     - move after tapped on map view
+    - pin support 'drag & drop' functionality
 

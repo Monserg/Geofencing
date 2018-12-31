@@ -50,6 +50,7 @@ class MainShowViewController: UIViewController {
     
     var reachability: Reachability!
 
+    private var annotationView: MKAnnotationView!
     private let locationManager = CLLocationManager()
     private var model = MainShowModel()
     
@@ -69,9 +70,8 @@ class MainShowViewController: UIViewController {
             self.mapView.delegate = self
             self.mapView.userTrackingMode = .follow
             
-            let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(mapViewTapped(sender:)))
-//            gestureRecognizer.delegate = self
-            self.mapView.addGestureRecognizer(gestureRecognizer)
+            let gestureRecognizerTap = UITapGestureRecognizer(target: self, action: #selector(mapViewTapped(sender:)))
+            self.mapView.addGestureRecognizer(gestureRecognizerTap)
         }
     }
     
@@ -270,6 +270,11 @@ class MainShowViewController: UIViewController {
             let locationPointAnnotation = MKPointAnnotation()
             locationPointAnnotation.coordinate = location.coordinate
             locationPointAnnotation.title = "User current location"
+            
+//            let gestureRecognizerLongTap = UILongPressGestureRecognizer(target: self, action: #selector(pointAnnotationLongTapped(sender:)))
+//            gestureRecognizerLongTap.minimumPressDuration = 2
+//            locationPointAnnotation. addGestureRecognizer(gestureRecognizerLongTap)
+
             self.mapView.addAnnotation(locationPointAnnotation)
             
             self.model.settingsPointAnnotation = locationPointAnnotation
@@ -279,7 +284,9 @@ class MainShowViewController: UIViewController {
         
         // Move created point annotation
         settingsPointAnnotation.title = "Geofence location"
+        
         UIView.animate(withDuration: 0.5, animations: {
+            self.mapView.deselectAnnotation(settingsPointAnnotation, animated: true)
             settingsPointAnnotation.coordinate = CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
         })
     }
@@ -414,40 +421,64 @@ class MainShowViewController: UIViewController {
     }
     
     // Map view
-    @objc func mapViewTapped(sender: UILongPressGestureRecognizer) {
+    @objc func mapViewTapped(sender: UITapGestureRecognizer) {
         let location = sender.location(in: self.mapView)
         let coordinate = self.mapView.convert(location, toCoordinateFrom: self.mapView)
         
         self.addPointAnnotation(location: CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude))
+    }
+    
+    @objc func pointAnnotationLongTapped(sender: UILongPressGestureRecognizer) {
+        if sender.state == .cancelled || sender.state == .ended {
+            let touchPoint = sender.location(in: self.mapView)
+            let newCoordinate = self.mapView.convert(touchPoint, toCoordinateFrom: self.mapView)
+            let newLocation = CLLocation(latitude: newCoordinate.latitude, longitude: newCoordinate.longitude)
+            
+            self.addPointAnnotation(location: newLocation)
+        }
     }
 }
 
 
 // MARK: - MKMapViewDelegate
 extension MainShowViewController: MKMapViewDelegate {
-    
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         print("MainShowViewController: function: \(#function), line: \(#line): run")
 
-        let identifier = currentUserLocationKey
+        if annotation.isMember(of: MKUserLocation.self) {
+            return nil
+        }
         
-//        if annotation is Geotification {
-            var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKPinAnnotationView
+        self.annotationView = self.mapView.dequeueReusableAnnotationView(withIdentifier: currentUserLocationKey)
+        
+        if self.annotationView == nil {
+            self.annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: currentUserLocationKey)
+        }
+        
+        self.annotationView.isDraggable = true
+        self.annotationView.canShowCallout = true
+        self.annotationView.image = UIImage(named: "icon-location-pin")
+        
+        return self.annotationView
 
-            if annotationView == nil {
-                annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
-                annotationView?.canShowCallout = true
-                let removeButton = UIButton(type: .custom)
-                removeButton.frame = CGRect(x: 0, y: 0, width: 23, height: 23)
-                removeButton.setImage(UIImage(named: "icon-geotification-delete")!, for: .normal)
-                annotationView?.leftCalloutAccessoryView = removeButton
-            }
-            
-            else {
-                annotationView?.annotation = annotation
-            }
-           
-            return annotationView
+        
+////        if annotation is Geotification {
+//            var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKPinAnnotationView
+//
+//            if annotationView == nil {
+//                annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+////                annotationView?.canShowCallout = true
+//                let removeButton = UIButton(type: .custom)
+//                removeButton.frame = CGRect(x: 0, y: 0, width: 23, height: 23)
+//                removeButton.setImage(UIImage(named: "icon-geotification-delete")!, for: .normal)
+//                annotationView?.leftCalloutAccessoryView = removeButton
+//            }
+//
+//            else {
+//                annotationView?.annotation = annotation
+//            }
+//
+//            return annotationView
 //        }
         
 //        return nil
@@ -466,6 +497,16 @@ extension MainShowViewController: MKMapViewDelegate {
         }
         
         return MKOverlayRenderer(overlay: overlay)
+    }
+    
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, didChange newState: MKAnnotationView.DragState, fromOldState oldState: MKAnnotationView.DragState) {
+        switch newState {
+        case .ending, .canceling:
+            view.dragState = .none
+        
+        default:
+            break
+        }
     }
     
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
